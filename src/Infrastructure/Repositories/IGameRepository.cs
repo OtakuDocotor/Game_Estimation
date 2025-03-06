@@ -11,7 +11,7 @@ namespace Infrastructure.Repositories
     {
         public Task<Game?> ReadById(int id);
         public Task<List<Game>> ReadAll();
-        public Task Create(Game game);
+        public Task<int> Create(Game game);
         public Task<bool> Update(Game game);
         public Task<bool> Delete(int id);
     }

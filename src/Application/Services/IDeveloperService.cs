@@ -11,7 +11,7 @@ namespace Application.Services
     {
         public Task<DeveloperDTO?> ReadById(int id);
         public Task<List<DeveloperDTO>> ReadAll();
-        public Task Create(DeveloperDTO dev);
+        public Task<int> Create(DeveloperDTO dev);
         public Task<bool> Update(DeveloperDTO dev);
         public Task<bool> Delete(int id);
     }

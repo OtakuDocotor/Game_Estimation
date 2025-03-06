@@ -11,7 +11,7 @@ namespace Application.Services
     {
         public Task<GameDTO?> ReadById(int id);
         public Task<List<GameDTO>> ReadAll();
-        public Task Create(GameDTO game);
+        public Task<int> Create(GameDTO game);
         public Task<bool> Update(GameDTO game);
         public Task<bool> Delete(int id);
     }

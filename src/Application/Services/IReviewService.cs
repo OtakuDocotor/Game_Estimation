@@ -11,7 +11,7 @@ namespace Application.Services
     {
         public Task<ReviewDTO?> ReadById(int id);
         public Task<List<ReviewDTO>> ReadAll();
-        public Task Create(ReviewDTO review);
+        public Task<int> Create(ReviewDTO review);
         public Task<bool> Update(ReviewDTO review);
         public Task<bool> Delete(int id);
     }

@@ -9,7 +9,7 @@ namespace Application.Services
 {
     class UserService : IUserService
     {
-        public Task Create(UserDTO user)
+        public Task<int> Create(UserDTO user)
         {
             throw new NotImplementedException();
         }

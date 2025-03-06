@@ -12,6 +12,7 @@ namespace Application.DTO
         public string Name { get; set; }
         public UserDTO Author { get; set; }
         public string Content { get; set; }
-        public GameDTO Write_On { get; set; }
+        public int GameId { get; set; }
+        public int Score { get; set; }
     }
 }

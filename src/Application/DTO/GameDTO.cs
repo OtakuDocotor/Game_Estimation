@@ -10,10 +10,8 @@ namespace Application.DTO
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public double AVG_Estamalation { get; set; }
-        public DeveloperDTO _Developer { get; set; }
+        public double Average_Score { get; set; }
+        public DeveloperDTO Developer { get; set; }
         public List<ReviewDTO> Reviews { get; set; } 
-
-
     }
 }

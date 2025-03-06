@@ -9,48 +9,49 @@ namespace Infrastructure.Repositories
 {
     class DeveloperRepository : IDeveloperRepository
     {
-        private List<Developer> Developers = new List<Developer>();
+        private List<Developer> _developers = new List<Developer>();
         public DeveloperRepository()
         {
 
         }
-        public Task Create(Developer dev)
+        public Task<int> Create(Developer dev)
         {
-            Developers.Add(dev);
-            return Task.CompletedTask;
+            _developers.Add(dev);
+            return Task.FromResult(dev.ID);
         }
 
         public Task<bool> Delete(int id)
         {
-            if (Developers.Any(x => x.ID == id))
+            if (_developers.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }
-            Developers.RemoveAll(x => x.ID == id);
+            _developers.RemoveAll(x => x.ID == id);
             return Task.FromResult(true);
         }
 
         public Task<List<Developer>> ReadAll()
         {
-            return Task.FromResult(Developers);
+            return Task.FromResult(_developers);
         }
 
         public Task<Developer?> ReadById(int id)
         {
-            var dev = Developers.Find(x => x.ID == id);
+            var dev = _developers.Find(x => x.ID == id);
             return Task.FromResult(dev);
         }
 
         public Task<bool> Update(Developer dev)
         {
-            var devToUpt = Developers.Find(x => x.ID == dev.ID);
-            if (devToUpt == null)
+            var devToUpd = _developers.Find(x => x.ID == dev.ID);
+            if (devToUpd == null)
             {
                 return Task.FromResult(false);
             }
-            devToUpt.Name = dev.Name;
-            devToUpt.Games = dev.Games;
-            devToUpt.Content = dev.Content;
+            devToUpd.Name = dev.Name;
+            devToUpd.Games = dev.Games;
+            devToUpd.Description = dev.Description;
+            devToUpd.LogoURL = dev.LogoURL;
             return Task.FromResult(true);
         }
     }
