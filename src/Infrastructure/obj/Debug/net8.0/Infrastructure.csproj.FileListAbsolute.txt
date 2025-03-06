@@ -1,0 +1,12 @@
+E:\проекты VS\Asp_Games\src\Infrastructure\bin\Debug\net8.0\Infrastructure.deps.json
+E:\проекты VS\Asp_Games\src\Infrastructure\bin\Debug\net8.0\Infrastructure.dll
+E:\проекты VS\Asp_Games\src\Infrastructure\bin\Debug\net8.0\Infrastructure.pdb
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\Infrastructure.AssemblyInfoInputs.cache
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\Infrastructure.AssemblyInfo.cs
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\Infrastructure.csproj.CoreCompileInputs.cache
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\Infrastructure.sourcelink.json
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\Infrastructure.dll
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\refint\Infrastructure.dll
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\Infrastructure.pdb
+E:\проекты VS\Asp_Games\src\Infrastructure\obj\Debug\net8.0\ref\Infrastructure.dll
