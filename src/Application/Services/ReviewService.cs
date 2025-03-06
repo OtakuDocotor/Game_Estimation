@@ -9,7 +9,7 @@ namespace Application.Services
 {
     class ReviewService : IReviewService
     {
-        public Task Create(ReviewDTO review)
+        public Task<int> Create(ReviewDTO review)
         {
             throw new NotImplementedException();
         }

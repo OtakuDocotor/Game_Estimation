@@ -9,7 +9,7 @@ namespace Application.Services
 {
     class GameService : IGameService
     {
-        public Task Create(GameDTO game)
+        public Task<int> Create(GameDTO game)
         {
             throw new NotImplementedException();
         }

@@ -9,49 +9,49 @@ namespace Infrastructure.Repositories
 {
     class GameRepository : IGameRepository
     {
-        private List<Game> games = new List<Game>();
+        private List<Game> _games = new List<Game>();
         public GameRepository()
         {
 
         }
-        public Task Create(Game game)
+        public Task<int> Create(Game game)
         {
-            games.Add(game);
-            return Task.CompletedTask;
+            _games.Add(game);
+            return Task.FromResult(game.ID);
         }
 
         public Task<bool> Delete(int id)
         {
-            if(games.Any(x=>x.ID==id))
+            if(_games.Any(x=>x.ID==id))
             {
                 return Task.FromResult(false);
             }
-            games.RemoveAll(x => x.ID == id);
+            _games.RemoveAll(x => x.ID == id);
             return Task.FromResult(true);
         }
 
         public Task<List<Game>> ReadAll()
         {
-            return Task.FromResult(games);
+            return Task.FromResult(_games);
         }
 
         public Task<Game?> ReadById(int id)
         {
-            var game = games.Find(x => x.ID == id);
+            var game = _games.Find(x => x.ID == id);
             return Task.FromResult(game);
         }
 
         public Task<bool> Update(Game game)
         {
-            var gameToUpt = games.Find(x => x.ID == game.ID);
-            if (gameToUpt==null)
+            var gameToUpd = _games.Find(x => x.ID == game.ID);
+            if (gameToUpd==null)
             {
                 return Task.FromResult(false);
             }
-            gameToUpt._Developer = game._Developer;
-            gameToUpt.Reviews = game.Reviews;
-            gameToUpt.AVG_Estamalation = game.AVG_Estamalation;
-            gameToUpt.Name = game.Name;
+            gameToUpd.Developer = game.Developer;
+            gameToUpd.Reviews = game.Reviews;
+            gameToUpd.AverageScore = game.AverageScore;
+            gameToUpd.Name = game.Name;
             return Task.FromResult(true);
         }
     }

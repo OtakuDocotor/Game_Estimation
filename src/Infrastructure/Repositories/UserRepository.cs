@@ -9,47 +9,47 @@ namespace Infrastructure.Repositories
 {
     class UserRepository : IUserRepository
     {
-        private List<User> Users = new List<User>();
+        private List<User> _users = new List<User>();
         public UserRepository()
         {
 
         }
-        public Task Create(User user)
+        public Task<int> Create(User user)
         {
-            Users.Add(user);
-            return Task.CompletedTask;
+            _users.Add(user);
+            return Task.FromResult(user.ID);
         }
 
         public Task<bool> Delete(int id)
         {
-            if (Users.Any(x => x.ID == id))
+            if (_users.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }
-            Users.RemoveAll(x => x.ID == id);
+            _users.RemoveAll(x => x.ID == id);
             return Task.FromResult(true);
         }
 
         public Task<List<User>> ReadAll()
         {
-            return Task.FromResult(Users);
+            return Task.FromResult(_users);
         }
 
         public Task<User?> ReadById(int id)
         {
-            var rev = Users.Find(x => x.ID == id);
+            var rev = _users.Find(x => x.ID == id);
             return Task.FromResult(rev);
         }
 
         public Task<bool> Update(User user)
         {
-            var userToUpt = Users.Find(x => x.ID == user.ID);
-            if (userToUpt == null)
+            var userToUpd = _users.Find(x => x.ID == user.ID);
+            if (userToUpd == null)
             {
                 return Task.FromResult(false);
             }
-            userToUpt.Name = user.Name;
-            userToUpt.Reviews = user.Reviews;
+            userToUpd.Name = user.Name;
+            userToUpd.Reviews = user.Reviews;
             return Task.FromResult(true);
         }
     }

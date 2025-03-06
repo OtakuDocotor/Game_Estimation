@@ -9,7 +9,7 @@ namespace Application.Services
 {
     class DeveloperService : IDeveloperService
     {
-        public Task Create(DeveloperDTO dev)
+        public Task<int> Create(DeveloperDTO dev)
         {
             throw new NotImplementedException();
         }

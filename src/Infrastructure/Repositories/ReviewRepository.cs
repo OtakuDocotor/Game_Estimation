@@ -9,49 +9,50 @@ namespace Infrastructure.Repositories
 {
     class ReviewRepository : IReviewRepository
     {
-        private List<Review> Reviews = new List<Review>();
+        private List<Review> _reviews = new List<Review>();
         public ReviewRepository()
         {
 
         }
-        public Task Create(Review review)
+        public Task<int> Create(Review review)
         {
-            Reviews.Add(review);
-            return Task.CompletedTask;
+            _reviews.Add(review);
+            return Task.FromResult(review.ID);
         }
 
         public Task<bool> Delete(int id)
         {
-            if (Reviews.Any(x => x.ID == id))
+            if (_reviews.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }
-            Reviews.RemoveAll(x => x.ID == id);
+            _reviews.RemoveAll(x => x.ID == id);
             return Task.FromResult(true);
         }
 
         public Task<List<Review>> ReadAll()
         {
-            return Task.FromResult(Reviews);
+            return Task.FromResult(_reviews);
         }
 
         public Task<Review?> ReadById(int id)
         {
-            var rev = Reviews.Find(x => x.ID == id);
+            var rev = _reviews.Find(x => x.ID == id);
             return Task.FromResult(rev);
         }
 
         public Task<bool> Update(Review review)
         {
-            var revToUpt = Reviews.Find(x => x.ID == review.ID);
-            if (revToUpt == null)
+            var revToUpd = _reviews.Find(x => x.ID == review.ID);
+            if (revToUpd == null)
             {
                 return Task.FromResult(false);
             }
-            revToUpt.Write_On = review.Write_On;
-            revToUpt.Name = review.Name;
-            revToUpt.Author = review.Author;
-            revToUpt.Content = review.Content;
+            revToUpd.Write_On = review.Write_On;
+            revToUpd.Name = review.Name;
+            revToUpd.Author = review.Author;
+            revToUpd.Content = review.Content;
+            revToUpd.Score = review.Score;
             return Task.FromResult(true);
         }
     }

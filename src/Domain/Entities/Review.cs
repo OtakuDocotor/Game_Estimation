@@ -13,5 +13,6 @@ namespace Domain.Entities
         public User Author { get; set; }
         public string Content { get; set; }
         public Game Write_On { get; set; }
+        public int Score { get; set; }
     }
 }

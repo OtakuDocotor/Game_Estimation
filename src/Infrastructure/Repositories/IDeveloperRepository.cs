@@ -12,7 +12,7 @@ namespace Infrastructure.Repositories
     {
         public Task<Developer?> ReadById(int id);
         public Task<List<Developer>> ReadAll();
-        public Task Create(Developer dev);
+        public Task<int> Create(Developer dev);
         public Task<bool> Update(Developer dev);
         public Task<bool> Delete(int id);
     }

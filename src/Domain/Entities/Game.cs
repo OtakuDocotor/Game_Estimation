@@ -10,10 +10,8 @@ namespace Domain.Entities
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public double AVG_Estamalation { get; set; }
-        public Developer _Developer { get; set; }
+        public double AverageScore { get; set; }
+        public Developer Developer { get; set; }
         public List<Review> Reviews { get; set; } 
-
-
     }
 }
