@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
 
         public Task<bool> Delete(int id)
         {
-            if(!_games.Any(x=>x.ID==id))
+            if(!_games.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }
@@ -29,9 +29,9 @@ namespace Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<List<Game>> ReadAll()
+        public Task<IEnumerable<Game>> ReadAll()
         {
-            return Task.FromResult(_games);
+            return Task.FromResult(_games.AsEnumerable());
         }
 
         public Task<Game?> ReadById(int id)

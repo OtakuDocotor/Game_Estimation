@@ -14,7 +14,7 @@ namespace Application.Services
     public class DeveloperService : IDeveloperService
     {
         private readonly IDeveloperRepository _developerRepository;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper)
         {
             _developerRepository = developerRepository;
@@ -23,7 +23,7 @@ namespace Application.Services
         public async Task<int> Create(DeveloperDTO dev)
         {
             var mappedService = _mapper.Map<Developer>(dev);
-            if(mappedService!=null)
+            if(mappedService != null)
             {
                 await _developerRepository.Create(mappedService);
                 return mappedService.ID;
@@ -49,7 +49,11 @@ namespace Application.Services
         public async Task<bool> Update(DeveloperDTO dev)
         {
             var mappedService = _mapper.Map<Developer>(dev);
-            return await _developerRepository.Update(mappedService);
+            if (mappedService != null)
+            {
+                return await _developerRepository.Update(mappedService);
+            }
+            throw new NotImplementedException();
         }
     }
 }

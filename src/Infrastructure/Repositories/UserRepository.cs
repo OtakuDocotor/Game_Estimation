@@ -30,9 +30,9 @@ namespace Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<List<User>> ReadAll()
+        public Task<IEnumerable<User>> ReadAll()
         {
-            return Task.FromResult(_users);
+            return Task.FromResult(_users.AsEnumerable());
         }
 
         public Task<User?> ReadById(int id)

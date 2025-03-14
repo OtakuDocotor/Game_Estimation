@@ -13,7 +13,7 @@ namespace Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
@@ -22,7 +22,7 @@ namespace Application.Services
         public async Task<int> Create(UserDTO user)
         {
             var mappedService = _mapper.Map<User>(user);
-            if(mappedService!=null)
+            if(mappedService != null)
             {
                 await _userRepository.Create(mappedService);
                 return mappedService.ID;
@@ -48,7 +48,11 @@ namespace Application.Services
         public async Task<bool> Update(UserDTO user)
         {
             var mappedService = _mapper.Map<User>(user);
-            return await _userRepository.Update(mappedService);
+            if (mappedService != null)
+            {
+                return await _userRepository.Update(mappedService);
+            }
+            throw new NotImplementedException();
         }
     }
 }

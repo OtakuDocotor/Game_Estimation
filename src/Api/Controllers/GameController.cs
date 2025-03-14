@@ -8,13 +8,13 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class GameController : ControllerBase
     {
-        private IGameService _gameService;
+        private readonly IGameService _gameService;
         public GameController(IGameService gameService)
         {
             _gameService = gameService;
         }
         [HttpPost]
-        public async Task<IActionResult>Create([FromQuery] GameDTO game)
+        public async Task<IActionResult>Create([FromBody] GameDTO game)
         {
             if(!ModelState.IsValid)
             {
@@ -30,7 +30,7 @@ namespace Api.Controllers
             var result = await _gameService.Delete(id);
             if (result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }
@@ -53,10 +53,14 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(GameDTO game)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _gameService.Update(game);
             if (result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }

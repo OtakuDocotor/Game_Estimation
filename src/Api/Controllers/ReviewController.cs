@@ -8,13 +8,13 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class ReviewController : ControllerBase
     {
-        private IReviewService _reviewService;
+        private readonly IReviewService _reviewService;
         public ReviewController(IReviewService reviewService)
         {
             _reviewService = reviewService;
         }
         [HttpPost]
-        public async Task<IActionResult> Create([FromQuery] ReviewDTO review)
+        public async Task<IActionResult> Create([FromBody] ReviewDTO review)
         {
             if (!ModelState.IsValid)
             {
@@ -30,7 +30,7 @@ namespace Api.Controllers
             var result = await _reviewService.Delete(id);
             if (result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }
@@ -53,10 +53,14 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(ReviewDTO review)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _reviewService.Update(review);
             if (result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }

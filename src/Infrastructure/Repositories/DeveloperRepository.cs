@@ -29,9 +29,9 @@ namespace Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<List<Developer>> ReadAll()
+        public Task<IEnumerable<Developer>> ReadAll()
         {
-            return Task.FromResult(_developers);
+            return Task.FromResult(_developers.AsEnumerable());
         }
 
         public Task<Developer?> ReadById(int id)

@@ -10,13 +10,13 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class DeveloperController : ControllerBase
     {
-        private IDeveloperService _developerService;
+        private readonly IDeveloperService _developerService;
         public DeveloperController(IDeveloperService developerService)
         {
             _developerService = developerService;
         }
         [HttpPost]
-        public async Task<IActionResult> Create([FromQuery] DeveloperDTO developer)
+        public async Task<IActionResult> Create([FromBody] DeveloperDTO developer)
         {
             if(!ModelState.IsValid)
             {
@@ -32,7 +32,7 @@ namespace Api.Controllers
             var result = await _developerService.Delete(id);
             if(result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }
@@ -55,10 +55,14 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(DeveloperDTO developer)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _developerService.Update(developer);
             if(result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }

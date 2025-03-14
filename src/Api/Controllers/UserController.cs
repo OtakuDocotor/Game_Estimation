@@ -8,13 +8,13 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
         public UserController(IUserService userService)
         {
             _userService = userService;
         }
         [HttpPost]
-        public async Task<IActionResult> Create([FromQuery] UserDTO user)
+        public async Task<IActionResult> Create([FromBody] UserDTO user)
         {
             if (!ModelState.IsValid)
             {
@@ -30,7 +30,7 @@ namespace Api.Controllers
             var result = await _userService.Delete(id);
             if (result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }
@@ -53,10 +53,14 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UserDTO user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _userService.Update(user);
             if (result)
             {
-                return Ok();
+                return NoContent();
             }
             return NotFound();
         }

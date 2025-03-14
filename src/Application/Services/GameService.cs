@@ -15,7 +15,7 @@ namespace Application.Services
     public class GameService : IGameService
     {
         private readonly IGameRepository _gameRepository;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         public GameService(IGameRepository gameRepository, IMapper mapper)
         {
             _gameRepository = gameRepository;
@@ -24,7 +24,7 @@ namespace Application.Services
         public async Task<int> Create(GameDTO game)
         {
             var mappedService = _mapper.Map<Game>(game);
-            if(mappedService!=null)
+            if(mappedService != null)
             {
                 await _gameRepository.Create(mappedService);
                 return mappedService.ID;
@@ -49,8 +49,12 @@ namespace Application.Services
         }
         public async Task<bool> Update(GameDTO game)
         {
-            var mappedSevice = _mapper.Map<Game>(game);
-            return await _gameRepository.Update(mappedSevice);
+            var mappedService = _mapper.Map<Game>(game);
+            if (mappedService != null)
+            {
+                return await _gameRepository.Update(mappedService);
+            }
+            throw  new NotImplementedException();
         }
     }
 }
