@@ -1,4 +1,7 @@
 ﻿using Application.DTO;
+using AutoMapper;
+using Domain.Entities;
+using Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,31 +10,46 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    class ReviewService : IReviewService
+    public class ReviewService : IReviewService
     {
-        public Task<int> Create(ReviewDTO review)
+        private readonly IReviewRepository _reviewRepository;
+        private IMapper _mapper;
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper)
         {
+            _reviewRepository = reviewRepository;
+            _mapper = mapper;
+        }
+        public async Task<int> Create(ReviewDTO review)
+        {
+            var mappedService = _mapper.Map<Review>(review);
+            if(mappedService!=null)
+            {
+                await _reviewRepository.Create(mappedService);
+                return mappedService.ID;
+            }
             throw new NotImplementedException();
         }
-
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _reviewRepository.Delete(id);
         }
 
-        public Task<List<ReviewDTO>> ReadAll()
+        public async Task<List<ReviewDTO>> ReadAll()
         {
-            throw new NotImplementedException();
+            var reviews =await _reviewRepository.ReadAll();
+            var mappedServices = reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
+            return mappedServices;
         }
-
-        public Task<ReviewDTO?> ReadById(int id)
+        public async Task<ReviewDTO?> ReadById(int id)
         {
-            throw new NotImplementedException();
+            var review = await _reviewRepository.ReadById(id);
+            var mappedService = _mapper.Map<ReviewDTO>(review);
+            return mappedService;
         }
-
-        public Task<bool> Update(ReviewDTO review)
+        public async Task<bool> Update(ReviewDTO review)
         {
-            throw new NotImplementedException();
+            var mappedService = _mapper.Map<Review>(review);
+            return await _reviewRepository.Update(mappedService);
         }
     }
 }

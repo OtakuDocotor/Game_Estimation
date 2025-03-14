@@ -12,7 +12,6 @@ namespace Infrastructure.Repositories
         private List<Game> _games = new List<Game>();
         public GameRepository()
         {
-
         }
         public Task<int> Create(Game game)
         {
@@ -22,7 +21,7 @@ namespace Infrastructure.Repositories
 
         public Task<bool> Delete(int id)
         {
-            if(_games.Any(x=>x.ID==id))
+            if(!_games.Any(x=>x.ID==id))
             {
                 return Task.FromResult(false);
             }

@@ -9,10 +9,9 @@ namespace Infrastructure.Repositories
 {
     class DeveloperRepository : IDeveloperRepository
     {
-        private List<Developer> _developers = new List<Developer>();
+        private List<Developer> _developers = new List<Developer>() { };
         public DeveloperRepository()
         {
-
         }
         public Task<int> Create(Developer dev)
         {
@@ -22,7 +21,7 @@ namespace Infrastructure.Repositories
 
         public Task<bool> Delete(int id)
         {
-            if (_developers.Any(x => x.ID == id))
+            if (!_developers.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }

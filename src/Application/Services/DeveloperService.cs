@@ -4,34 +4,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure;
+using Infrastructure.Repositories;
+using AutoMapper;
+using Domain.Entities;
 
 namespace Application.Services
 {
-    class DeveloperService : IDeveloperService
+    public class DeveloperService : IDeveloperService
     {
-        public Task<int> Create(DeveloperDTO dev)
+        private readonly IDeveloperRepository _developerRepository;
+        private IMapper _mapper;
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper)
         {
+            _developerRepository = developerRepository;
+            _mapper = mapper;
+        }
+        public async Task<int> Create(DeveloperDTO dev)
+        {
+            var mappedService = _mapper.Map<Developer>(dev);
+            if(mappedService!=null)
+            {
+                await _developerRepository.Create(mappedService);
+                return mappedService.ID;
+            }
             throw new NotImplementedException();
         }
-
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _developerRepository.Delete(id);
         }
-
-        public Task<List<DeveloperDTO>> ReadAll()
+        public async Task<List<DeveloperDTO>> ReadAll()
         {
-            throw new NotImplementedException();
+            var developers = await _developerRepository.ReadAll();
+            var mappedServices = developers.Select(x => _mapper.Map<DeveloperDTO>(x)).ToList();
+            return mappedServices;
         }
-
-        public Task<DeveloperDTO?> ReadById(int id)
+        public async Task<DeveloperDTO?> ReadById(int id)
         {
-            throw new NotImplementedException();
+            var developer = await _developerRepository.ReadById(id);
+            var mappedService = _mapper.Map<DeveloperDTO>(developer);
+            return mappedService;
         }
-
-        public Task<bool> Update(DeveloperDTO dev)
+        public async Task<bool> Update(DeveloperDTO dev)
         {
-            throw new NotImplementedException();
+            var mappedService = _mapper.Map<Developer>(dev);
+            return await _developerRepository.Update(mappedService);
         }
     }
 }

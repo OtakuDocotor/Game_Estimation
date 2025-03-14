@@ -4,34 +4,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure;
+using Infrastructure.Repositories;
+using AutoMapper;
+using Domain.Entities;
+using System.Runtime.InteropServices;
 
 namespace Application.Services
 {
-    class GameService : IGameService
+    public class GameService : IGameService
     {
-        public Task<int> Create(GameDTO game)
+        private readonly IGameRepository _gameRepository;
+        private IMapper _mapper;
+        public GameService(IGameRepository gameRepository, IMapper mapper)
         {
+            _gameRepository = gameRepository;
+            _mapper = mapper;
+        }
+        public async Task<int> Create(GameDTO game)
+        {
+            var mappedService = _mapper.Map<Game>(game);
+            if(mappedService!=null)
+            {
+                await _gameRepository.Create(mappedService);
+                return mappedService.ID;
+            }
             throw new NotImplementedException();
         }
-
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _gameRepository.Delete(id);
         }
-
-        public Task<List<GameDTO>> ReadAll()
+        public async Task<List<GameDTO>> ReadAll()
         {
-            throw new NotImplementedException();
+            var games = await _gameRepository.ReadAll();
+            var mappedServices = games.Select(x => _mapper.Map<GameDTO>(x)).ToList();
+            return mappedServices;
         }
-
-        public Task<GameDTO?> ReadById(int id)
+        public async Task<GameDTO?> ReadById(int id)
         {
-            throw new NotImplementedException();
+            var game = await _gameRepository.ReadById(id);
+            var mappedService = _mapper.Map<GameDTO>(game);
+            return mappedService;
         }
-
-        public Task<bool> Update(GameDTO game)
+        public async Task<bool> Update(GameDTO game)
         {
-            throw new NotImplementedException();
+            var mappedSevice = _mapper.Map<Game>(game);
+            return await _gameRepository.Update(mappedSevice);
         }
     }
 }

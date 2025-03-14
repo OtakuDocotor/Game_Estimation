@@ -22,7 +22,7 @@ namespace Infrastructure.Repositories
 
         public Task<bool> Delete(int id)
         {
-            if (_reviews.Any(x => x.ID == id))
+            if (!_reviews.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }

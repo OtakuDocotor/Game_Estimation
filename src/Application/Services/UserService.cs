@@ -1,4 +1,7 @@
 ﻿using Application.DTO;
+using AutoMapper;
+using Domain.Entities;
+using Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,31 +10,45 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    class UserService : IUserService
+    public class UserService : IUserService
     {
-        public Task<int> Create(UserDTO user)
+        private readonly IUserRepository _userRepository;
+        private IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
+            _userRepository = userRepository;
+            _mapper = mapper;
+        }
+        public async Task<int> Create(UserDTO user)
+        {
+            var mappedService = _mapper.Map<User>(user);
+            if(mappedService!=null)
+            {
+                await _userRepository.Create(mappedService);
+                return mappedService.ID;
+            }
             throw new NotImplementedException();
         }
-
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _userRepository.Delete(id);
         }
-
-        public Task<List<UserDTO>> ReadAll()
+        public async Task<List<UserDTO>> ReadAll()
         {
-            throw new NotImplementedException();
+            var users = await _userRepository.ReadAll();
+            var mappedServices = users.Select(x => _mapper.Map<UserDTO>(x)).ToList();
+            return mappedServices;
         }
-
-        public Task<UserDTO?> ReadById(int id)
+        public async Task<UserDTO?> ReadById(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.ReadById(id);
+            var mappedService = _mapper.Map<UserDTO>(user);
+            return mappedService;
         }
-
-        public Task<bool> Update(UserDTO user)
+        public async Task<bool> Update(UserDTO user)
         {
-            throw new NotImplementedException();
+            var mappedService = _mapper.Map<User>(user);
+            return await _userRepository.Update(mappedService);
         }
     }
 }
