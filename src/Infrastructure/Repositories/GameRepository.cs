@@ -12,6 +12,10 @@ namespace Infrastructure.Repositories
         private List<Game> _games = new List<Game>();
         public GameRepository()
         {
+            _games = new List<Game> {
+                        new Game { ID = 1, DeveloperId = 1, Name = "Prey",AverageScore=8,Reviews=
+                        new List<Review>{
+                            new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } };
         }
         public Task<int> Create(Game game)
         {
