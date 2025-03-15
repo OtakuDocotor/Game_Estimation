@@ -26,11 +26,11 @@ namespace Application.Services
         }
         public async Task<int> Create(DeveloperDTO dev)
         {
-            var mappedService = _mapper.Map<Developer>(dev);
-            if(mappedService != null)
+            var mappedDeveloper = _mapper.Map<Developer>(dev);
+            if(mappedDeveloper != null)
             {
-                await _developerRepository.Create(mappedService);
-                return mappedService.ID;
+                await _developerRepository.Create(mappedDeveloper);
+                return mappedDeveloper.ID;
             }
             throw new NotImplementedException();
         }
@@ -46,26 +46,26 @@ namespace Application.Services
                 });
                 return await _developerRepository.Delete(id);
             }
-            throw new ArgumentNullException();
+            return false;
         }
         public async Task<List<DeveloperDTO>> ReadAll()
         {
             var developers = await _developerRepository.ReadAll();
-            var mappedServices = developers.Select(x => _mapper.Map<DeveloperDTO>(x)).ToList();
-            return mappedServices;
+            var mappedDeveloper = developers.Select(x => _mapper.Map<DeveloperDTO>(x)).ToList();
+            return mappedDeveloper;
         }
         public async Task<DeveloperDTO?> ReadById(int id)
         {
             var developer = await _developerRepository.ReadById(id);
-            var mappedService = _mapper.Map<DeveloperDTO>(developer);
-            return mappedService;
+            var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
+            return mappedDeveloper;
         }
         public async Task<bool> Update(DeveloperDTO dev)
         {
-            var mappedService = _mapper.Map<Developer>(dev);
-            if (mappedService != null)
+            var mappedDeveloper = _mapper.Map<Developer>(dev);
+            if (mappedDeveloper != null)
             {
-                return await _developerRepository.Update(mappedService);
+                return await _developerRepository.Update(mappedDeveloper);
             }
             throw new NotImplementedException();
         }

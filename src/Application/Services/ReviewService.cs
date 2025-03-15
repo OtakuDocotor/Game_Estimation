@@ -25,11 +25,11 @@ namespace Application.Services
         }
         public async Task<int> Create(ReviewDTO review)
         {
-            var mappedService = _mapper.Map<Review>(review);
-            if(mappedService != null&&(await _gameRepository.ReadById(review.GameId)==null)&&(await _userRepository.ReadById(review.UserId)==null))
+            var mappedReview = _mapper.Map<Review>(review);
+            if(mappedReview != null && (await _gameRepository.ReadById(review.GameId) == null) && (await _userRepository.ReadById(review.UserId) == null))
             {
-                await _reviewRepository.Create(mappedService);
-                return mappedService.ID;
+                await _reviewRepository.Create(mappedReview);
+                return mappedReview.ID;
             }
             throw new NotImplementedException();
         }
@@ -41,21 +41,21 @@ namespace Application.Services
         public async Task<List<ReviewDTO>> ReadAll()
         {
             var reviews =await _reviewRepository.ReadAll();
-            var mappedServices = reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
-            return mappedServices;
+            var mappedReview = reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
+            return mappedReview;
         }
         public async Task<ReviewDTO?> ReadById(int id)
         {
             var review = await _reviewRepository.ReadById(id);
-            var mappedService = _mapper.Map<ReviewDTO>(review);
-            return mappedService;
+            var mappedReview = _mapper.Map<ReviewDTO>(review);
+            return mappedReview;
         }
         public async Task<bool> Update(ReviewDTO review)
         {
-            var mappedService = _mapper.Map<Review>(review);
-            if (mappedService != null)
+            var mappedReview = _mapper.Map<Review>(review);
+            if (mappedReview != null)
             {
-                return await _reviewRepository.Update(mappedService);
+                return await _reviewRepository.Update(mappedReview);
             }
             throw new NotImplementedException();
         }

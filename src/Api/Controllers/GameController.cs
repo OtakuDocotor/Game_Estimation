@@ -9,14 +9,16 @@ namespace Api.Controllers
     public class GameController : ControllerBase
     {
         private readonly IGameService _gameService;
+
         public GameController(IGameService gameService)
         {
             _gameService = gameService;
         }
+
         [HttpPost]
         public async Task<IActionResult>Create([FromBody] GameDTO game)
         {
-            if(!ModelState.IsValid)
+            if( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -24,41 +26,45 @@ namespace Api.Controllers
             var result = new { id = gameId };
             return CreatedAtAction(nameof(ReadById), new { id = gameId }, result);
         }
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _gameService.Delete(id);
-            if (result)
+            if( result )
             {
                 return NoContent();
             }
             return NotFound();
         }
+
         [HttpGet]
         public async Task<IActionResult> ReadAll()
         {
             var result = await _gameService.ReadAll();
             return Ok(result);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> ReadById(int id)
         {
             var result = await _gameService.ReadById(id);
-            if(result!=null)
+            if(result != null)
             {
                 return Ok(result);
             }
             return NotFound();
         }
+
         [HttpPut]
         public async Task<IActionResult> Update(GameDTO game)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
             var result = await _gameService.Update(game);
-            if (result)
+            if ( result )
             {
                 return NoContent();
             }

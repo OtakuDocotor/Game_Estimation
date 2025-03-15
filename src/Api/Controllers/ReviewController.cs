@@ -9,14 +9,16 @@ namespace Api.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly IReviewService _reviewService;
+
         public ReviewController(IReviewService reviewService)
         {
             _reviewService = reviewService;
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ReviewDTO review)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -24,22 +26,25 @@ namespace Api.Controllers
             var result = new { Id = reviewId };
             return CreatedAtAction(nameof(ReadById), new { id = reviewId }, result);
         }
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _reviewService.Delete(id);
-            if (result)
+            if ( result )
             {
                 return NoContent();
             }
             return NotFound();
         }
+
         [HttpGet]
         public async Task<IActionResult> ReadAll()
         {
             var result = await _reviewService.ReadAll();
             return Ok(result);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> ReadById(int id)
         {
@@ -50,15 +55,16 @@ namespace Api.Controllers
             }
             return NotFound();
         }
+
         [HttpPut]
         public async Task<IActionResult> Update(ReviewDTO review)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
             var result = await _reviewService.Update(review);
-            if (result)
+            if ( result )
             {
                 return NoContent();
             }

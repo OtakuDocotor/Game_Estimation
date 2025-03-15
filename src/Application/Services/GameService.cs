@@ -27,11 +27,11 @@ namespace Application.Services
         }
         public async Task<int> Create(GameDTO game)
         {
-            var mappedService = _mapper.Map<Game>(game);
-            if(mappedService != null && await _developerRepository.ReadById(game.DeveloperId)!=null)
+            var mappedGames = _mapper.Map<Game>(game);
+            if(mappedGames != null && await _developerRepository.ReadById(game.DeveloperId) != null)
             {
-                await _gameRepository.Create(mappedService);
-                return mappedService.ID;
+                await _gameRepository.Create(mappedGames);
+                return mappedGames.ID;
             }
             throw new NotImplementedException();
         }
@@ -43,26 +43,26 @@ namespace Application.Services
                 game.Reviews.ForEach(async x => await _reviewRepository.Delete(x.ID));
                 return await _gameRepository.Delete(id);
             }
-            throw new ArgumentNullException();
+            return false;
         }
         public async Task<List<GameDTO>> ReadAll()
         {
             var games = await _gameRepository.ReadAll();
-            var mappedServices = games.Select(x => _mapper.Map<GameDTO>(x)).ToList();
-            return mappedServices;
+            var mappedGames = games.Select(x => _mapper.Map<GameDTO>(x)).ToList();
+            return mappedGames;
         }
         public async Task<GameDTO?> ReadById(int id)
         {
             var game = await _gameRepository.ReadById(id);
-            var mappedService = _mapper.Map<GameDTO>(game);
-            return mappedService;
+            var mappedGames = _mapper.Map<GameDTO>(game);
+            return mappedGames;
         }
         public async Task<bool> Update(GameDTO game)
         {
-            var mappedService = _mapper.Map<Game>(game);
-            if (mappedService != null)
+            var mappedGames = _mapper.Map<Game>(game);
+            if (mappedGames != null)
             {
-                return await _gameRepository.Update(mappedService);
+                return await _gameRepository.Update(mappedGames);
             }
             throw  new NotImplementedException();
         }
