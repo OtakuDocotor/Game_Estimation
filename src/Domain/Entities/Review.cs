@@ -10,9 +10,9 @@ namespace Domain.Entities
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public User Author { get; set; }
+        public int UserId { get; set; }
         public string Content { get; set; }
-        public Game Write_On { get; set; }
+        public int GameId { get; set; }
         public int Score { get; set; }
     }
 }

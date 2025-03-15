@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories
             {
                 return Task.FromResult(false);
             }
-            gameToUpd.Developer = game.Developer;
+            gameToUpd.DeveloperId = game.DeveloperId;
             gameToUpd.Reviews = game.Reviews;
             gameToUpd.AverageScore = game.AverageScore;
             gameToUpd.Name = game.Name;

@@ -48,9 +48,9 @@ namespace Infrastructure.Repositories
             {
                 return Task.FromResult(false);
             }
-            revToUpd.Write_On = review.Write_On;
+            revToUpd.UserId = review.UserId;
             revToUpd.Name = review.Name;
-            revToUpd.Author = review.Author;
+            revToUpd.GameId = review.GameId;
             revToUpd.Content = review.Content;
             revToUpd.Score = review.Score;
             return Task.FromResult(true);

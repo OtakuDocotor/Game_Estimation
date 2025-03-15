@@ -13,16 +13,20 @@ namespace Application.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly IMapper _mapper;
-        public ReviewService(IReviewRepository reviewRepository, IMapper mapper)
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper,IUserRepository userRepository,IGameRepository gameRepository)
         {
             _reviewRepository = reviewRepository;
+            _gameRepository = gameRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
         public async Task<int> Create(ReviewDTO review)
         {
             var mappedService = _mapper.Map<Review>(review);
-            if(mappedService != null)
+            if(mappedService != null&&(await _gameRepository.ReadById(review.GameId)==null)&&(await _userRepository.ReadById(review.UserId)==null))
             {
                 await _reviewRepository.Create(mappedService);
                 return mappedService.ID;

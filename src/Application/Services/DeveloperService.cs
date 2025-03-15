@@ -14,11 +14,15 @@ namespace Application.Services
     public class DeveloperService : IDeveloperService
     {
         private readonly IDeveloperRepository _developerRepository;
+        private readonly IGameRepository _gameRepository;
+        private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
-        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper)
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository)
         {
             _developerRepository = developerRepository;
             _mapper = mapper;
+            _gameRepository = gameRepository;
+            _reviewRepository = reviewRepository;
         }
         public async Task<int> Create(DeveloperDTO dev)
         {
@@ -32,7 +36,17 @@ namespace Application.Services
         }
         public async Task<bool> Delete(int id)
         {
-            return await _developerRepository.Delete(id);
+            var developer = await ReadById(id);
+            if (developer != null)
+            {
+                developer.Games.ForEach(async x =>
+                {
+                    x.Reviews.ForEach(async y => await _reviewRepository.Delete(y.ID));
+                    await _gameRepository.Delete(x.ID);
+                });
+                return await _developerRepository.Delete(id);
+            }
+            throw new ArgumentNullException();
         }
         public async Task<List<DeveloperDTO>> ReadAll()
         {
