@@ -17,6 +17,7 @@ namespace Application.Services
         private readonly IGameRepository _gameRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
+
         public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository)
         {
             _developerRepository = developerRepository;
@@ -24,6 +25,7 @@ namespace Application.Services
             _gameRepository = gameRepository;
             _reviewRepository = reviewRepository;
         }
+
         public async Task<int> Create(DeveloperDTO dev)
         {
             var mappedDeveloper = _mapper.Map<Developer>(dev);
@@ -34,6 +36,7 @@ namespace Application.Services
             }
             throw new NotImplementedException();
         }
+
         public async Task<bool> Delete(int id)
         {
             var developer = await ReadById(id);
@@ -48,18 +51,21 @@ namespace Application.Services
             }
             return false;
         }
+
         public async Task<List<DeveloperDTO>> ReadAll()
         {
             var developers = await _developerRepository.ReadAll();
             var mappedDeveloper = developers.Select(x => _mapper.Map<DeveloperDTO>(x)).ToList();
             return mappedDeveloper;
         }
+
         public async Task<DeveloperDTO?> ReadById(int id)
         {
             var developer = await _developerRepository.ReadById(id);
             var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
             return mappedDeveloper;
         }
+
         public async Task<bool> Update(DeveloperDTO dev)
         {
             var mappedDeveloper = _mapper.Map<Developer>(dev);

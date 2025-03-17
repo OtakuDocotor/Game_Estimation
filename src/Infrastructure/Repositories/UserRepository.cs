@@ -10,12 +10,14 @@ namespace Infrastructure.Repositories
     class UserRepository : IUserRepository
     {
         private List<User> _users = new List<User>();
+
         public UserRepository()
         {
             _users = new List<User> { new User { ID = 1, Name = "Test", 
                 Reviews= new List<Review>{
                             new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } };
         }
+
         public Task<int> Create(User user)
         {
             _users.Add(user);

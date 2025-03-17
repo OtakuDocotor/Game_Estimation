@@ -18,7 +18,7 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ReviewDTO review)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -31,7 +31,7 @@ namespace Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _reviewService.Delete(id);
-            if ( result )
+            if (result)
             {
                 return NoContent();
             }
@@ -59,12 +59,12 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(ReviewDTO review)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var result = await _reviewService.Update(review);
-            if ( result )
+            if (result)
             {
                 return NoContent();
             }

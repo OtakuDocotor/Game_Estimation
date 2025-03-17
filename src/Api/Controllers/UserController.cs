@@ -18,7 +18,7 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserDTO user)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -31,7 +31,7 @@ namespace Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _userService.Delete(id);
-            if ( result )
+            if (result)
             {
                 return NoContent();
             }
@@ -49,7 +49,7 @@ namespace Api.Controllers
         public async Task<IActionResult> ReadById(int id)
         {
             var result = await _userService.ReadById(id);
-            if ( result != null )
+            if (result != null)
             {
                 return Ok(result);
             }
@@ -59,12 +59,12 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UserDTO user)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var result = await _userService.Update(user);
-            if ( result )
+            if (result)
             {
                 return NoContent();
             }

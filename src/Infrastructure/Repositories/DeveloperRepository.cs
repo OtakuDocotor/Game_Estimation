@@ -9,7 +9,8 @@ namespace Infrastructure.Repositories
 {
     class DeveloperRepository : IDeveloperRepository
     {
-        private List<Developer> _developers=new List<Developer>();
+        private List<Developer> _developers = new List<Developer>();
+
         public DeveloperRepository()
         {
             _developers = new List<Developer> {
@@ -19,6 +20,7 @@ namespace Infrastructure.Repositories
                         new List<Review>{ 
                             new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } },LogoURL="asdadasdadsda" }};
         }
+
         public Task<int> Create(Developer dev)
         {
             _developers.Add(dev);

@@ -18,6 +18,7 @@ namespace Application.Services
         private readonly IGameRepository _gameRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
+
         public GameService(IGameRepository gameRepository, IMapper mapper,IDeveloperRepository developerRepository,IReviewRepository reviewRepository)
         {
             _reviewRepository = reviewRepository;
@@ -25,16 +26,18 @@ namespace Application.Services
             _gameRepository = gameRepository;
             _mapper = mapper;
         }
+
         public async Task<int> Create(GameDTO game)
         {
-            var mappedGames = _mapper.Map<Game>(game);
-            if(mappedGames != null && await _developerRepository.ReadById(game.DeveloperId) != null)
+            var mappedGame = _mapper.Map<Game>(game);
+            if (mappedGame != null && await _developerRepository.ReadById(game.DeveloperId) != null)
             {
-                await _gameRepository.Create(mappedGames);
-                return mappedGames.ID;
+                await _gameRepository.Create(mappedGame);
+                return mappedGame.ID;
             }
             throw new NotImplementedException();
         }
+
         public async Task<bool> Delete(int id)
         {
             var game = await ReadById(id);
@@ -45,18 +48,21 @@ namespace Application.Services
             }
             return false;
         }
+
         public async Task<List<GameDTO>> ReadAll()
         {
             var games = await _gameRepository.ReadAll();
             var mappedGames = games.Select(x => _mapper.Map<GameDTO>(x)).ToList();
             return mappedGames;
         }
+
         public async Task<GameDTO?> ReadById(int id)
         {
             var game = await _gameRepository.ReadById(id);
             var mappedGames = _mapper.Map<GameDTO>(game);
             return mappedGames;
         }
+
         public async Task<bool> Update(GameDTO game)
         {
             var mappedGames = _mapper.Map<Game>(game);

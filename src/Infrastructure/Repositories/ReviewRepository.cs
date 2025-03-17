@@ -10,11 +10,13 @@ namespace Infrastructure.Repositories
     class ReviewRepository : IReviewRepository
     {
         private List<Review> _reviews = new List<Review>();
+
         public ReviewRepository()
         {
             _reviews = new List<Review>{
                             new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } };
         }
+
         public Task<int> Create(Review review)
         {
             _reviews.Add(review);

@@ -10,6 +10,7 @@ namespace Infrastructure.Repositories
     class GameRepository : IGameRepository
     {
         private List<Game> _games = new List<Game>();
+
         public GameRepository()
         {
             _games = new List<Game> {
@@ -17,6 +18,7 @@ namespace Infrastructure.Repositories
                         new List<Review>{
                             new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } };
         }
+
         public Task<int> Create(Game game)
         {
             _games.Add(game);

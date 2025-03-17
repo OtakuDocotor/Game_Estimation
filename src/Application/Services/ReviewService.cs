@@ -16,6 +16,7 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IMapper _mapper;
+
         public ReviewService(IReviewRepository reviewRepository, IMapper mapper,IUserRepository userRepository,IGameRepository gameRepository)
         {
             _reviewRepository = reviewRepository;
@@ -23,16 +24,18 @@ namespace Application.Services
             _userRepository = userRepository;
             _mapper = mapper;
         }
+
         public async Task<int> Create(ReviewDTO review)
         {
             var mappedReview = _mapper.Map<Review>(review);
-            if(mappedReview != null && (await _gameRepository.ReadById(review.GameId) == null) && (await _userRepository.ReadById(review.UserId) == null))
+            if (mappedReview != null && (await _gameRepository.ReadById(review.GameId) != null) && (await _userRepository.ReadById(review.UserId) != null))
             {
                 await _reviewRepository.Create(mappedReview);
                 return mappedReview.ID;
             }
             throw new NotImplementedException();
         }
+
         public async Task<bool> Delete(int id)
         {
             return await _reviewRepository.Delete(id);
@@ -41,15 +44,17 @@ namespace Application.Services
         public async Task<List<ReviewDTO>> ReadAll()
         {
             var reviews =await _reviewRepository.ReadAll();
-            var mappedReview = reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
-            return mappedReview;
+            var mappedReviews = reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
+            return mappedReviews;
         }
+
         public async Task<ReviewDTO?> ReadById(int id)
         {
             var review = await _reviewRepository.ReadById(id);
             var mappedReview = _mapper.Map<ReviewDTO>(review);
             return mappedReview;
         }
+
         public async Task<bool> Update(ReviewDTO review)
         {
             var mappedReview = _mapper.Map<Review>(review);
