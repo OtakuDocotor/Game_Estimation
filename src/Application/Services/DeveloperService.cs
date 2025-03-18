@@ -34,19 +34,19 @@ namespace Application.Services
                 await _developerRepository.Create(mappedDeveloper);
                 return mappedDeveloper.ID;
             }
-            throw new NotImplementedException();
+            return 0;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var developer = await ReadById(id);
-            if (developer != null)
+            var developers = await ReadById(id);
+            if (developers != null)
             {
-                developer.Games.ForEach(async x =>
+                developers.ForEach(x => x.Games.ForEach(async x =>
                 {
                     x.Reviews.ForEach(async y => await _reviewRepository.Delete(y.ID));
                     await _gameRepository.Delete(x.ID);
-                });
+                }));
                 return await _developerRepository.Delete(id);
             }
             return false;
@@ -59,10 +59,10 @@ namespace Application.Services
             return mappedDeveloper;
         }
 
-        public async Task<DeveloperDTO?> ReadById(int id)
+        public async Task<List<DeveloperDTO>?> ReadById(int id)
         {
-            var developer = await _developerRepository.ReadById(id);
-            var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
+            var developers = await _developerRepository.ReadById(id);
+            var mappedDeveloper = developers.Select(x => _mapper.Map<DeveloperDTO>(x)).ToList();
             return mappedDeveloper;
         }
 

@@ -13,12 +13,12 @@ namespace Infrastructure.Repositories
 
         public DeveloperRepository()
         {
-            _developers = new List<Developer> {
+            _developers = new List<Developer> { 
                 new Developer { ID = 1, Name = "Arcane", Description = "Good dev",
                     Games = new List<Game> {
                         new Game { ID = 1, DeveloperId = 1, Name = "Prey",AverageScore=8,Reviews=
-                        new List<Review>{ 
-                            new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } },LogoURL="asdadasdadsda" }};
+                            new List<Review>{ 
+                                new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } },LogoURL="asdadasdadsda" }};
         }
 
         public Task<int> Create(Developer dev)
@@ -42,10 +42,10 @@ namespace Infrastructure.Repositories
             return Task.FromResult(_developers.AsEnumerable());
         }
 
-        public Task<Developer?> ReadById(int id)
+        public Task<IEnumerable<Developer>?> ReadById(int id)
         {
-            var dev = _developers.Find(x => x.ID == id);
-            return Task.FromResult(dev);
+            var dev = _developers.FindAll(x => x.ID == id);
+            return Task.FromResult(dev.AsEnumerable());
         }
 
         public Task<bool> Update(Developer dev)

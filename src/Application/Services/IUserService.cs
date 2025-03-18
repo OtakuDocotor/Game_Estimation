@@ -9,7 +9,7 @@ namespace Application.Services
 {
     public interface IUserService
     {
-        public Task<UserDTO?> ReadById(int id);
+        public Task<List<UserDTO?>> ReadById(int id);
         public Task<List<UserDTO>> ReadAll();
         public Task<int> Create(UserDTO user);
         public Task<bool> Update(UserDTO user);

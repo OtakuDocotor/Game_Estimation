@@ -38,10 +38,10 @@ namespace Infrastructure.Repositories
             return Task.FromResult(_reviews.AsEnumerable());
         }
 
-        public Task<Review?> ReadById(int id)
+        public Task<IEnumerable<Review>?> ReadById(int id)
         {
-            var rev = _reviews.Find(x => x.ID == id);
-            return Task.FromResult(rev);
+            var rev = _reviews.FindAll(x => x.ID == id);
+            return Task.FromResult(rev.AsEnumerable());
         }
 
         public Task<bool> Update(Review review)

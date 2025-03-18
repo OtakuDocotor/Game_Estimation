@@ -13,7 +13,8 @@ namespace Infrastructure.Repositories
 
         public UserRepository()
         {
-            _users = new List<User> { new User { ID = 1, Name = "Test", 
+            _users = new List<User> { 
+                new User { ID = 1, Name = "Test", 
                 Reviews= new List<Review>{
                             new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } };
         }
@@ -39,10 +40,10 @@ namespace Infrastructure.Repositories
             return Task.FromResult(_users.AsEnumerable());
         }
 
-        public Task<User?> ReadById(int id)
+        public Task<IEnumerable<User>?> ReadById(int id)
         {
-            var rev = _users.Find(x => x.ID == id);
-            return Task.FromResult(rev);
+            var rev = _users.FindAll(x => x.ID == id);
+            return Task.FromResult(rev.AsEnumerable());
         }
 
         public Task<bool> Update(User user)

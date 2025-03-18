@@ -19,7 +19,7 @@ namespace Application.Services
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
 
-        public GameService(IGameRepository gameRepository, IMapper mapper,IDeveloperRepository developerRepository,IReviewRepository reviewRepository)
+        public GameService(IGameRepository gameRepository, IMapper mapper, IDeveloperRepository developerRepository, IReviewRepository reviewRepository)
         {
             _reviewRepository = reviewRepository;
             _developerRepository = developerRepository;
@@ -35,15 +35,23 @@ namespace Application.Services
                 await _gameRepository.Create(mappedGame);
                 return mappedGame.ID;
             }
-            throw new NotImplementedException();
+            return 0;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var game = await ReadById(id);
-            if (game != null)
+            var games = await ReadById(id);
+            if (games != null)
             {
-                game.Reviews.ForEach(async x => await _reviewRepository.Delete(x.ID));
+                games.ForEach(async x =>
+                {
+                    var reviews = (await _reviewRepository.ReadAll()).ToList();
+                    var reviewsToDelete = reviews.FindAll(x => x.UserId == id);
+                    if (reviewsToDelete != null)
+                    {
+                        reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
+                    }
+                });
                 return await _gameRepository.Delete(id);
             }
             return false;
@@ -56,10 +64,10 @@ namespace Application.Services
             return mappedGames;
         }
 
-        public async Task<GameDTO?> ReadById(int id)
+        public async Task<List<GameDTO>?> ReadById(int id)
         {
-            var game = await _gameRepository.ReadById(id);
-            var mappedGames = _mapper.Map<GameDTO>(game);
+            var games = await _gameRepository.ReadById(id);
+            var mappedGames = games.Select(x => _mapper.Map<GameDTO>(x)).ToList();
             return mappedGames;
         }
 

@@ -15,8 +15,8 @@ namespace Infrastructure.Repositories
         {
             _games = new List<Game> {
                         new Game { ID = 1, DeveloperId = 1, Name = "Prey",AverageScore=8,Reviews=
-                        new List<Review>{
-                            new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } };
+                            new List<Review>{
+                                new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } };
         }
 
         public Task<int> Create(Game game)
@@ -40,10 +40,10 @@ namespace Infrastructure.Repositories
             return Task.FromResult(_games.AsEnumerable());
         }
 
-        public Task<Game?> ReadById(int id)
+        public Task<IEnumerable<Game>?> ReadById(int id)
         {
-            var game = _games.Find(x => x.ID == id);
-            return Task.FromResult(game);
+            var game = _games.FindAll(x => x.ID == id);
+            return Task.FromResult(game.AsEnumerable());
         }
 
         public Task<bool> Update(Game game)

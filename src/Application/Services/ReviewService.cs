@@ -17,7 +17,7 @@ namespace Application.Services
         private readonly IGameRepository _gameRepository;
         private readonly IMapper _mapper;
 
-        public ReviewService(IReviewRepository reviewRepository, IMapper mapper,IUserRepository userRepository,IGameRepository gameRepository)
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper, IUserRepository userRepository, IGameRepository gameRepository)
         {
             _reviewRepository = reviewRepository;
             _gameRepository = gameRepository;
@@ -28,12 +28,14 @@ namespace Application.Services
         public async Task<int> Create(ReviewDTO review)
         {
             var mappedReview = _mapper.Map<Review>(review);
-            if (mappedReview != null && (await _gameRepository.ReadById(review.GameId) != null) && (await _userRepository.ReadById(review.UserId) != null))
+            var gameExists = await _gameRepository.ReadById(review.GameId) != null;
+            var userExists = await _userRepository.ReadById(review.UserId) != null;
+            if (mappedReview != null && gameExists && userExists)
             {
                 await _reviewRepository.Create(mappedReview);
                 return mappedReview.ID;
             }
-            throw new NotImplementedException();
+            return 0;
         }
 
         public async Task<bool> Delete(int id)
@@ -43,15 +45,15 @@ namespace Application.Services
 
         public async Task<List<ReviewDTO>> ReadAll()
         {
-            var reviews =await _reviewRepository.ReadAll();
+            var reviews = await _reviewRepository.ReadAll();
             var mappedReviews = reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
             return mappedReviews;
         }
 
-        public async Task<ReviewDTO?> ReadById(int id)
+        public async Task<List<ReviewDTO>?> ReadById(int id)
         {
-            var review = await _reviewRepository.ReadById(id);
-            var mappedReview = _mapper.Map<ReviewDTO>(review);
+            var reviews = await _reviewRepository.ReadById(id);
+            var mappedReview =reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
             return mappedReview;
         }
 

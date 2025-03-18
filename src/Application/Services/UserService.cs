@@ -29,7 +29,7 @@ namespace Application.Services
                 await _userRepository.Create(mappedUser);
                 return mappedUser.ID;
             }
-            throw new NotImplementedException();
+            return 0;
         }
 
         public async Task<bool> Delete(int id)
@@ -44,10 +44,10 @@ namespace Application.Services
             return mappedServices;
         }
 
-        public async Task<UserDTO?> ReadById(int id)
+        public async Task<List<UserDTO?>> ReadById(int id)
         {
-            var user = await _userRepository.ReadById(id);
-            var mappedService = _mapper.Map<UserDTO>(user);
+            var users = await _userRepository.ReadById(id);
+            var mappedService = users.Select(x => _mapper.Map<UserDTO>(x)).ToList();
             return mappedService;
         }
 
