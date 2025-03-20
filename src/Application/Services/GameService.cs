@@ -40,35 +40,32 @@ namespace Application.Services
 
         public async Task<bool> Delete(int id)
         {
-            var games = await ReadById(id);
-            if (games != null)
+            var game = await ReadById(id);
+            if (game != null)
             {
-                games.ForEach(async x =>
+                var reviews = (await _reviewRepository.ReadAll()).ToList();
+                var reviewsToDelete = reviews.FindAll(x => x.GameId == id);
+                if (reviewsToDelete != null)
                 {
-                    var reviews = (await _reviewRepository.ReadAll()).ToList();
-                    var reviewsToDelete = reviews.FindAll(x => x.UserId == id);
-                    if (reviewsToDelete != null)
-                    {
-                        reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
-                    }
-                });
+                    reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
+                }
                 return await _gameRepository.Delete(id);
             }
             return false;
         }
 
-        public async Task<List<GameDTO>> ReadAll()
+        public async Task<IEnumerable<GameDTO>> ReadAll()
         {
             var games = await _gameRepository.ReadAll();
-            var mappedGames = games.Select(x => _mapper.Map<GameDTO>(x)).ToList();
+            var mappedGames = games.Select(x => _mapper.Map<GameDTO>(x));
             return mappedGames;
         }
 
-        public async Task<List<GameDTO>?> ReadById(int id)
+        public async Task<GameDTO?> ReadById(int id)
         {
-            var games = await _gameRepository.ReadById(id);
-            var mappedGames = games.Select(x => _mapper.Map<GameDTO>(x)).ToList();
-            return mappedGames;
+            var game = await _gameRepository.ReadById(id);
+            var mappedGame = _mapper.Map<GameDTO>(game);
+            return mappedGame;
         }
 
         public async Task<bool> Update(GameDTO game)
@@ -78,7 +75,7 @@ namespace Application.Services
             {
                 return await _gameRepository.Update(mappedGames);
             }
-            throw  new NotImplementedException();
+            return false;
         }
     }
 }

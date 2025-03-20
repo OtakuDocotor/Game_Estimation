@@ -29,7 +29,7 @@ namespace Application.Services
         public async Task<int> Create(DeveloperDTO dev)
         {
             var mappedDeveloper = _mapper.Map<Developer>(dev);
-            if(mappedDeveloper != null)
+            if (mappedDeveloper != null)
             {
                 await _developerRepository.Create(mappedDeveloper);
                 return mappedDeveloper.ID;
@@ -39,30 +39,30 @@ namespace Application.Services
 
         public async Task<bool> Delete(int id)
         {
-            var developers = await ReadById(id);
-            if (developers != null)
+            var developer = await ReadById(id);
+            if (developer != null)
             {
-                developers.ForEach(x => x.Games.ForEach(async x =>
+                developer.Games.ForEach(async x =>
                 {
                     x.Reviews.ForEach(async y => await _reviewRepository.Delete(y.ID));
                     await _gameRepository.Delete(x.ID);
-                }));
+                });
                 return await _developerRepository.Delete(id);
             }
             return false;
         }
 
-        public async Task<List<DeveloperDTO>> ReadAll()
+        public async Task<IEnumerable<DeveloperDTO>> ReadAll()
         {
             var developers = await _developerRepository.ReadAll();
-            var mappedDeveloper = developers.Select(x => _mapper.Map<DeveloperDTO>(x)).ToList();
+            var mappedDeveloper = developers.Select(x => _mapper.Map<DeveloperDTO>(x));
             return mappedDeveloper;
         }
 
-        public async Task<List<DeveloperDTO>?> ReadById(int id)
+        public async Task<DeveloperDTO?> ReadById(int id)
         {
-            var developers = await _developerRepository.ReadById(id);
-            var mappedDeveloper = developers.Select(x => _mapper.Map<DeveloperDTO>(x)).ToList();
+            var developer = await _developerRepository.ReadById(id);
+            var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
             return mappedDeveloper;
         }
 
@@ -73,7 +73,7 @@ namespace Application.Services
             {
                 return await _developerRepository.Update(mappedDeveloper);
             }
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

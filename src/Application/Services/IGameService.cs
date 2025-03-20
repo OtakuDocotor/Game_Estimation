@@ -9,8 +9,8 @@ namespace Application.Services
 {
     public interface IGameService
     {
-        public Task<List<GameDTO>?> ReadById(int id);
-        public Task<List<GameDTO>> ReadAll();
+        public Task<GameDTO?> ReadById(int id);
+        public Task<IEnumerable<GameDTO>> ReadAll();
         public Task<int> Create(GameDTO game);
         public Task<bool> Update(GameDTO game);
         public Task<bool> Delete(int id);

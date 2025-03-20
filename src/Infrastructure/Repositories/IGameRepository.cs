@@ -9,7 +9,7 @@ namespace Infrastructure.Repositories
 {
     public interface IGameRepository
     {
-        public Task<IEnumerable<Game>?> ReadById(int id);
+        public Task<Game?> ReadById(int id);
         public Task<IEnumerable<Game>> ReadAll();
         public Task<int> Create(Game game);
         public Task<bool> Update(Game game);

@@ -43,17 +43,17 @@ namespace Application.Services
             return await _reviewRepository.Delete(id);
         }
 
-        public async Task<List<ReviewDTO>> ReadAll()
+        public async Task<IEnumerable<ReviewDTO>> ReadAll()
         {
             var reviews = await _reviewRepository.ReadAll();
-            var mappedReviews = reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
+            var mappedReviews = reviews.Select(x => _mapper.Map<ReviewDTO>(x));
             return mappedReviews;
         }
 
-        public async Task<List<ReviewDTO>?> ReadById(int id)
+        public async Task<ReviewDTO?> ReadById(int id)
         {
-            var reviews = await _reviewRepository.ReadById(id);
-            var mappedReview =reviews.Select(x => _mapper.Map<ReviewDTO>(x)).ToList();
+            var review = await _reviewRepository.ReadById(id);
+            var mappedReview =_mapper.Map<ReviewDTO>(review);
             return mappedReview;
         }
 
@@ -64,7 +64,7 @@ namespace Application.Services
             {
                 return await _reviewRepository.Update(mappedReview);
             }
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

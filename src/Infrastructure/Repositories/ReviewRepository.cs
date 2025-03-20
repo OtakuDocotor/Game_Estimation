@@ -13,8 +13,13 @@ namespace Infrastructure.Repositories
 
         public ReviewRepository()
         {
-            _reviews = new List<Review>{
-                            new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } };
+            _reviews = new List<Review>
+            {
+                new Review 
+                {
+                    ID = 1, GameId = 1, UserId = 1, Score = 8, Name = "TOP", Content = "Very good game" 
+                } 
+            };
         }
 
         public Task<int> Create(Review review)
@@ -38,10 +43,10 @@ namespace Infrastructure.Repositories
             return Task.FromResult(_reviews.AsEnumerable());
         }
 
-        public Task<IEnumerable<Review>?> ReadById(int id)
+        public Task<Review?> ReadById(int id)
         {
-            var rev = _reviews.FindAll(x => x.ID == id);
-            return Task.FromResult(rev.AsEnumerable());
+            var rev = _reviews.Find(x => x.ID == id);
+            return Task.FromResult(rev);
         }
 
         public Task<bool> Update(Review review)

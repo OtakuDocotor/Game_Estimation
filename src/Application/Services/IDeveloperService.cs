@@ -9,8 +9,8 @@ namespace Application.Services
 {
     public interface IDeveloperService
     {
-        public Task<List<DeveloperDTO>?> ReadById(int id);
-        public Task<List<DeveloperDTO>> ReadAll();
+        public Task<DeveloperDTO?> ReadById(int id);
+        public Task<IEnumerable<DeveloperDTO>> ReadAll();
         public Task<int> Create(DeveloperDTO dev);
         public Task<bool> Update(DeveloperDTO dev);
         public Task<bool> Delete(int id);

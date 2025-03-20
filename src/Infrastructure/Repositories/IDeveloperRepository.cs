@@ -10,7 +10,7 @@ namespace Infrastructure.Repositories
 {
     public interface IDeveloperRepository
     {
-        public Task<IEnumerable<Developer>?> ReadById(int id);
+        public Task<Developer?> ReadById(int id);
         public Task<IEnumerable<Developer>> ReadAll();
         public Task<int> Create(Developer dev);
         public Task<bool> Update(Developer dev);

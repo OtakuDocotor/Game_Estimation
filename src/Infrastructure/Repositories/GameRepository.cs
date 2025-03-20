@@ -13,10 +13,20 @@ namespace Infrastructure.Repositories
 
         public GameRepository()
         {
-            _games = new List<Game> {
-                        new Game { ID = 1, DeveloperId = 1, Name = "Prey",AverageScore=8,Reviews=
-                            new List<Review>{
-                                new Review {ID=1,GameId=1,UserId=1,Score=8,Name="TOP",Content="Very good game" } } } };
+            _games = new List<Game> 
+            {
+                new Game 
+                { 
+                    ID = 1, DeveloperId = 1, Name = "Prey", AverageScore = 8,
+                    Reviews = new List<Review>
+                    {
+                        new Review 
+                        {
+                            ID = 1, GameId = 1, UserId = 1, Score = 8, Name = "TOP", Content = "Very good game" 
+                        } 
+                    } 
+                } 
+            };
         }
 
         public Task<int> Create(Game game)
@@ -27,7 +37,7 @@ namespace Infrastructure.Repositories
 
         public Task<bool> Delete(int id)
         {
-            if(!_games.Any(x => x.ID == id))
+            if (!_games.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }
@@ -40,16 +50,16 @@ namespace Infrastructure.Repositories
             return Task.FromResult(_games.AsEnumerable());
         }
 
-        public Task<IEnumerable<Game>?> ReadById(int id)
+        public Task<Game?> ReadById(int id)
         {
-            var game = _games.FindAll(x => x.ID == id);
-            return Task.FromResult(game.AsEnumerable());
+            var game = _games.Find(x => x.ID == id);
+            return Task.FromResult(game);
         }
 
         public Task<bool> Update(Game game)
         {
             var gameToUpd = _games.Find(x => x.ID == game.ID);
-            if (gameToUpd==null)
+            if (gameToUpd == null)
             {
                 return Task.FromResult(false);
             }

@@ -13,12 +13,14 @@ namespace Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _reviewRepository = reviewRepository;
         }
 
         public async Task<int> Create(UserDTO user)
@@ -34,21 +36,31 @@ namespace Application.Services
 
         public async Task<bool> Delete(int id)
         {
+            var user = await ReadById(id);
+            if (user != null)
+            {
+                var reviews = (await _reviewRepository.ReadAll()).ToList();
+                var reviewsToDelete = reviews.FindAll(x => x.UserId == id);
+                if (reviewsToDelete != null)
+                {
+                    reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
+                }
+            }
             return await _userRepository.Delete(id);
         }
 
-        public async Task<List<UserDTO>> ReadAll()
+        public async Task<IEnumerable<UserDTO>> ReadAll()
         {
             var users = await _userRepository.ReadAll();
-            var mappedServices = users.Select(x => _mapper.Map<UserDTO>(x)).ToList();
-            return mappedServices;
+            var mappedUsers = users.Select(x => _mapper.Map<UserDTO>(x));
+            return mappedUsers;
         }
 
-        public async Task<List<UserDTO?>> ReadById(int id)
+        public async Task<UserDTO?> ReadById(int id)
         {
-            var users = await _userRepository.ReadById(id);
-            var mappedService = users.Select(x => _mapper.Map<UserDTO>(x)).ToList();
-            return mappedService;
+            var user = await _userRepository.ReadById(id);
+            var mappedUser = _mapper.Map<UserDTO>(user);
+            return mappedUser;
         }
 
         public async Task<bool> Update(UserDTO user)
@@ -58,7 +70,7 @@ namespace Application.Services
             {
                 return await _userRepository.Update(mappedService);
             }
-            throw new NotImplementedException();
+            return false;
         }
     }
 }
