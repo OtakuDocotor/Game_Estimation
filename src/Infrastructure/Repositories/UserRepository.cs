@@ -1,19 +1,28 @@
 ﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
     class UserRepository : IUserRepository
     {
         private List<User> _users = new List<User>();
+
         public UserRepository()
         {
-
+            _users = new List<User> { 
+                new User 
+                { 
+                    ID = 1, Name = "Test", 
+                    Reviews = new List<Review>
+                    {
+                        new Review 
+                        {
+                            ID = 1, GameId = 1, UserId = 1, Score = 8, Name = "TOP", Content = "Very good game" 
+                        } 
+                    } 
+                } 
+            };
         }
+
         public Task<int> Create(User user)
         {
             _users.Add(user);
@@ -22,7 +31,7 @@ namespace Infrastructure.Repositories
 
         public Task<bool> Delete(int id)
         {
-            if (_users.Any(x => x.ID == id))
+            if (!_users.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }
@@ -30,9 +39,9 @@ namespace Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<List<User>> ReadAll()
+        public Task<IEnumerable<User>> ReadAll()
         {
-            return Task.FromResult(_users);
+            return Task.FromResult(_users.AsEnumerable());
         }
 
         public Task<User?> ReadById(int id)

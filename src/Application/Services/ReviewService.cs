@@ -1,37 +1,65 @@
 ﻿using Application.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
+using Domain.Entities;
+using Infrastructure.Repositories;
 
 namespace Application.Services
 {
-    class ReviewService : IReviewService
+    public class ReviewService : IReviewService
     {
-        public Task<int> Create(ReviewDTO review)
+        private readonly IReviewRepository _reviewRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IGameRepository _gameRepository;
+        private readonly IMapper _mapper;
+
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper, IUserRepository userRepository, IGameRepository gameRepository)
         {
-            throw new NotImplementedException();
+            _reviewRepository = reviewRepository;
+            _gameRepository = gameRepository;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public Task<bool> Delete(int id)
+        public async Task<int> Create(ReviewDTO review)
         {
-            throw new NotImplementedException();
+            var mappedReview = _mapper.Map<Review>(review);
+            var gameExists = await _gameRepository.ReadById(review.GameId) != null;
+            var userExists = await _userRepository.ReadById(review.UserId) != null;
+            if (mappedReview != null && gameExists && userExists)
+            {
+               var id = await _reviewRepository.Create(mappedReview);
+                return id;
+            }
+            return 0;
         }
 
-        public Task<List<ReviewDTO>> ReadAll()
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _reviewRepository.Delete(id);
         }
 
-        public Task<ReviewDTO?> ReadById(int id)
+        public async Task<IEnumerable<ReviewDTO>> ReadAll()
         {
-            throw new NotImplementedException();
+            var reviews = await _reviewRepository.ReadAll();
+            var mappedReviews = reviews.Select(x => _mapper.Map<ReviewDTO>(x));
+            return mappedReviews;
         }
 
-        public Task<bool> Update(ReviewDTO review)
+        public async Task<ReviewDTO?> ReadById(int id)
         {
-            throw new NotImplementedException();
+            var review = await _reviewRepository.ReadById(id);
+            var mappedReview =_mapper.Map<ReviewDTO>(review);
+            return mappedReview;
+        }
+
+        public async Task<bool> Update(ReviewDTO review)
+        {
+            var mappedReview = _mapper.Map<Review>(review);
+            if (mappedReview != null)
+            {
+                return await _reviewRepository.Update(mappedReview);
+            }
+            return false;
         }
     }
 }

@@ -1,37 +1,73 @@
 ﻿using Application.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Infrastructure.Repositories;
+using AutoMapper;
+using Domain.Entities;
 
 namespace Application.Services
 {
-    class DeveloperService : IDeveloperService
+    public class DeveloperService : IDeveloperService
     {
-        public Task<int> Create(DeveloperDTO dev)
+        private readonly IDeveloperRepository _developerRepository;
+        private readonly IGameRepository _gameRepository;
+        private readonly IReviewRepository _reviewRepository;
+        private readonly IMapper _mapper;
+
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository)
         {
-            throw new NotImplementedException();
+            _developerRepository = developerRepository;
+            _mapper = mapper;
+            _gameRepository = gameRepository;
+            _reviewRepository = reviewRepository;
         }
 
-        public Task<bool> Delete(int id)
+        public async Task<int> Create(DeveloperDTO dev)
         {
-            throw new NotImplementedException();
+            var mappedDeveloper = _mapper.Map<Developer>(dev);
+            if (mappedDeveloper != null)
+            {
+                var id = await _developerRepository.Create(mappedDeveloper);
+                return id;
+            }
+            return 0;
         }
 
-        public Task<List<DeveloperDTO>> ReadAll()
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            var developer = await ReadById(id);
+            if (developer != null)
+            {
+                developer.Games.ForEach(async x =>
+                {
+                    x.Reviews.ForEach(async y => await _reviewRepository.Delete(y.ID));
+                    await _gameRepository.Delete(x.ID);
+                });
+                return await _developerRepository.Delete(id);
+            }
+            return false;
         }
 
-        public Task<DeveloperDTO?> ReadById(int id)
+        public async Task<IEnumerable<DeveloperDTO>> ReadAll()
         {
-            throw new NotImplementedException();
+            var developers = await _developerRepository.ReadAll();
+            var mappedDeveloper = developers.Select(x => _mapper.Map<DeveloperDTO>(x));
+            return mappedDeveloper;
         }
 
-        public Task<bool> Update(DeveloperDTO dev)
+        public async Task<DeveloperDTO?> ReadById(int id)
         {
-            throw new NotImplementedException();
+            var developer = await _developerRepository.ReadById(id);
+            var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
+            return mappedDeveloper;
+        }
+
+        public async Task<bool> Update(DeveloperDTO dev)
+        {
+            var mappedDeveloper = _mapper.Map<Developer>(dev);
+            if (mappedDeveloper != null)
+            {
+                return await _developerRepository.Update(mappedDeveloper);
+            }
+            return false;
         }
     }
 }

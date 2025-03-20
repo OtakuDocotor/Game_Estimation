@@ -1,19 +1,22 @@
 ﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
     class ReviewRepository : IReviewRepository
     {
         private List<Review> _reviews = new List<Review>();
+
         public ReviewRepository()
         {
-
+            _reviews = new List<Review>
+            {
+                new Review 
+                {
+                    ID = 1, GameId = 1, UserId = 1, Score = 8, Name = "TOP", Content = "Very good game" 
+                } 
+            };
         }
+
         public Task<int> Create(Review review)
         {
             _reviews.Add(review);
@@ -22,7 +25,7 @@ namespace Infrastructure.Repositories
 
         public Task<bool> Delete(int id)
         {
-            if (_reviews.Any(x => x.ID == id))
+            if (!_reviews.Any(x => x.ID == id))
             {
                 return Task.FromResult(false);
             }
@@ -30,9 +33,9 @@ namespace Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<List<Review>> ReadAll()
+        public Task<IEnumerable<Review>> ReadAll()
         {
-            return Task.FromResult(_reviews);
+            return Task.FromResult(_reviews.AsEnumerable());
         }
 
         public Task<Review?> ReadById(int id)
@@ -48,9 +51,9 @@ namespace Infrastructure.Repositories
             {
                 return Task.FromResult(false);
             }
-            revToUpd.Write_On = review.Write_On;
+            revToUpd.UserId = review.UserId;
             revToUpd.Name = review.Name;
-            revToUpd.Author = review.Author;
+            revToUpd.GameId = review.GameId;
             revToUpd.Content = review.Content;
             revToUpd.Score = review.Score;
             return Task.FromResult(true);

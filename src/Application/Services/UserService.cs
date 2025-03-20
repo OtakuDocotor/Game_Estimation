@@ -1,37 +1,71 @@
 ﻿using Application.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
+using Domain.Entities;
+using Infrastructure.Repositories;
 
 namespace Application.Services
 {
-    class UserService : IUserService
+    public class UserService : IUserService
     {
-        public Task<int> Create(UserDTO user)
+        private readonly IUserRepository _userRepository;
+        private readonly IReviewRepository _reviewRepository;
+        private readonly IMapper _mapper;
+
+        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
+            _mapper = mapper;
+            _reviewRepository = reviewRepository;
         }
 
-        public Task<bool> Delete(int id)
+        public async Task<int> Create(UserDTO user)
         {
-            throw new NotImplementedException();
+            var mappedUser = _mapper.Map<User>(user);
+            if (mappedUser != null)
+            {
+                var id = await _userRepository.Create(mappedUser);
+                return id;
+            }
+            return 0;
         }
 
-        public Task<List<UserDTO>> ReadAll()
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            var user = await ReadById(id);
+            if (user != null)
+            {
+                var reviews = (await _reviewRepository.ReadAll()).ToList();
+                var reviewsToDelete = reviews.FindAll(x => x.UserId == id);
+                if (reviewsToDelete != null)
+                {
+                    reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
+                }
+            }
+            return await _userRepository.Delete(id);
         }
 
-        public Task<UserDTO?> ReadById(int id)
+        public async Task<IEnumerable<UserDTO>> ReadAll()
         {
-            throw new NotImplementedException();
+            var users = await _userRepository.ReadAll();
+            var mappedUsers = users.Select(x => _mapper.Map<UserDTO>(x));
+            return mappedUsers;
         }
 
-        public Task<bool> Update(UserDTO user)
+        public async Task<UserDTO?> ReadById(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.ReadById(id);
+            var mappedUser = _mapper.Map<UserDTO>(user);
+            return mappedUser;
+        }
+
+        public async Task<bool> Update(UserDTO user)
+        {
+            var mappedUser = _mapper.Map<User>(user);
+            if (mappedUser != null)
+            {
+                return await _userRepository.Update(mappedUser);
+            }
+            return false;
         }
     }
 }
