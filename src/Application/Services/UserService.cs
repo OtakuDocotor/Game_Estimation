@@ -2,11 +2,6 @@
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -28,8 +23,8 @@ namespace Application.Services
             var mappedUser = _mapper.Map<User>(user);
             if (mappedUser != null)
             {
-                await _userRepository.Create(mappedUser);
-                return mappedUser.ID;
+                var id = await _userRepository.Create(mappedUser);
+                return id;
             }
             return 0;
         }
@@ -65,10 +60,10 @@ namespace Application.Services
 
         public async Task<bool> Update(UserDTO user)
         {
-            var mappedService = _mapper.Map<User>(user);
-            if (mappedService != null)
+            var mappedUser = _mapper.Map<User>(user);
+            if (mappedUser != null)
             {
-                return await _userRepository.Update(mappedService);
+                return await _userRepository.Update(mappedUser);
             }
             return false;
         }

@@ -1,10 +1,4 @@
 ﻿using Application.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infrastructure;
 using Infrastructure.Repositories;
 using AutoMapper;
 using Domain.Entities;
@@ -31,8 +25,8 @@ namespace Application.Services
             var mappedDeveloper = _mapper.Map<Developer>(dev);
             if (mappedDeveloper != null)
             {
-                await _developerRepository.Create(mappedDeveloper);
-                return mappedDeveloper.ID;
+                var id = await _developerRepository.Create(mappedDeveloper);
+                return id;
             }
             return 0;
         }

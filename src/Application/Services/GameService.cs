@@ -1,14 +1,7 @@
 ﻿using Application.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infrastructure;
 using Infrastructure.Repositories;
 using AutoMapper;
 using Domain.Entities;
-using System.Runtime.InteropServices;
 
 namespace Application.Services
 {
@@ -32,8 +25,8 @@ namespace Application.Services
             var mappedGame = _mapper.Map<Game>(game);
             if (mappedGame != null && await _developerRepository.ReadById(game.DeveloperId) != null)
             {
-                await _gameRepository.Create(mappedGame);
-                return mappedGame.ID;
+                var id = await _gameRepository.Create(mappedGame);
+                return id;
             }
             return 0;
         }

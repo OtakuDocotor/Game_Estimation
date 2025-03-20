@@ -2,11 +2,6 @@
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -32,8 +27,8 @@ namespace Application.Services
             var userExists = await _userRepository.ReadById(review.UserId) != null;
             if (mappedReview != null && gameExists && userExists)
             {
-                await _reviewRepository.Create(mappedReview);
-                return mappedReview.ID;
+               var id = await _reviewRepository.Create(mappedReview);
+                return id;
             }
             return 0;
         }
