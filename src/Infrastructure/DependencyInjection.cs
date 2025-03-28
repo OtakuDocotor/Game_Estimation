@@ -1,5 +1,10 @@
-﻿using Infrastructure.Repositories;
+﻿using FluentMigrator.Runner;
+using Infrastructure.Repositories.Interfaces;
+using Infrastructure.Repositories.PostgressRepositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+using System.Reflection;
 
 namespace Infrastructure
 {
@@ -7,10 +12,32 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            services.AddSingleton<IDeveloperRepository, DeveloperRepository>();
-            services.AddSingleton<IGameRepository, GameRepository>();
-            services.AddSingleton<IReviewRepository, ReviewRepository>();
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton(sp =>
+            {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                var connectionStrings = configuration.GetConnectionString("PostgresDB");
+                return new NpgsqlDataSourceBuilder(connectionStrings).Build();
+            });
+
+            services.AddScoped(sp =>
+            {
+                var datasource = sp.GetRequiredService<NpgsqlDataSource>();
+                return datasource.CreateConnection();
+            });
+
+            services.AddTransient<IDeveloperRepository, PostgresDeveloperRepository>();
+            services.AddTransient<IUserRepository, PostgresUserRepository>();
+            services.AddTransient<IGameRepository, PostgresGameRepository>();
+            services.AddTransient<IReviewRepository, PostgresReviewRepository>();
+
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                .AddPostgres()
+                .WithGlobalConnectionString("PostgresDB")
+                .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
+                .AddLogging(lb => lb.AddFluentMigratorConsole());
+            services.AddScoped<Database.MigrationRunner.MigrationRunner>();
+
             return services;
         }
     }

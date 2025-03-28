@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using Infrastructure.Repositories.Interfaces;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class GameRepository : IGameRepository
+    class PostgresGameRepository : IGameRepository
     {
         private List<Game> _games = new List<Game>();
 
-        public GameRepository()
+        public PostgresGameRepository()
         {
             _games = new List<Game> 
             {
