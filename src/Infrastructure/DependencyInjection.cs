@@ -30,6 +30,7 @@ namespace Infrastructure
             services.AddTransient<IGameRepository, PostgresGameRepository>();
             services.AddTransient<IReviewRepository, PostgresReviewRepository>();
 
+            DapperConfig.Configure();
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
                 .AddPostgres()

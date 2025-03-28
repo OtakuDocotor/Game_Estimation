@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var reviewId = await _connection.QuerySingleAsync<int>(
-                @"INSERT INTO reviews (name, content, score, userid, gameid)
+                @"INSERT INTO reviews (name, content, score, user_id, game_id)
                 VALUES (@Name, @Content, @Score, @UserId, @GameId)
                 RETURNING id",
                 new
@@ -51,7 +51,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var reviews = await _connection.QueryAsync<Review>(
-                @"SELECT id, name, content, score, userid, gameid
+                @"SELECT id, name, content, score, user_id, game_id
                 FROM reviews");
             await _connection.CloseAsync();
             return reviews;
@@ -61,7 +61,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var review = await _connection.QueryFirstOrDefaultAsync<Review>(
-                @"SELECT id, name, content, score, userid, gameid
+                @"SELECT id, name, content, score, user_id, game_id
                 FROM reviews
                 WHERE id = @Id",
                 new
@@ -77,12 +77,12 @@ namespace Infrastructure.Repositories.PostgressRepositories
             await _connection.OpenAsync();
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE reviews SET 
-                id = @Id
                 name = @Name
                 content = @Content,
                 score = @Score,
-                userid = @UserId,
-                gameid = @GameId",
+                user_id = @UserId,
+                game_id = @GameId
+                WHERE id=@Id ",
             new
             {
                 Id = review.ID,

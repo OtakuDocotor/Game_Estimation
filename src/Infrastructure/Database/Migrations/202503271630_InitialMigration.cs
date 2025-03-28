@@ -11,7 +11,7 @@ namespace Infrastructure.Database.Migrations
                 .WithColumn("id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("name").AsString(100).NotNullable()
                 .WithColumn("description").AsString(1000).NotNullable()
-                .WithColumn("logourl").AsString(500);
+                .WithColumn("logo_url").AsString(500);
 
             Create.Table("users")
                 .WithColumn("id").AsInt32().PrimaryKey().Identity()
@@ -20,23 +20,23 @@ namespace Infrastructure.Database.Migrations
             Create.Table("games")
                 .WithColumn("id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("name").AsString(100).NotNullable()
-                .WithColumn("averagescore").AsDouble()
-                .WithColumn("developerid").AsInt32().NotNullable().ForeignKey("developers", "id");
+                .WithColumn("average_score").AsDouble()
+                .WithColumn("developer_id").AsInt32().NotNullable().ForeignKey("developers", "id");
 
             Create.Table("reviews")
                 .WithColumn("id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("name").AsString(100)
                 .WithColumn("content").AsString(2000)
                 .WithColumn("score").AsDouble().NotNullable()
-                .WithColumn("userid").AsInt32().ForeignKey("users", "id")
-                .WithColumn("gameid").AsInt32().ForeignKey("games", "id");
+                .WithColumn("user_id").AsInt32().ForeignKey("users", "id")
+                .WithColumn("game_id").AsInt32().ForeignKey("games", "id");
 
             Insert.IntoTable("developers")
                 .Row(new
                 {
                     name = "Arcane",
                     description = "Good dev",
-                    logourl = "Logo"
+                    logo_url = "Logo"
                 });
 
             Insert.IntoTable("users")
@@ -49,8 +49,8 @@ namespace Infrastructure.Database.Migrations
                 .Row(new
                 {
                     name = "Prey",
-                    averagescore = 8,
-                    developerid = 1
+                    average_score = 8,
+                    developer_id = 1
                 });
 
             Insert.IntoTable("reviews")
@@ -59,8 +59,8 @@ namespace Infrastructure.Database.Migrations
                     name = "First review",
                     content = "Good game",
                     score = 8,
-                    userid = 1,
-                    gameid = 1
+                    user_id = 1,
+                    game_id = 1
                 });
         }
 

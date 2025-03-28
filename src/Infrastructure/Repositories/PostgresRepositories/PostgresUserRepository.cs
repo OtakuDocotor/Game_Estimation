@@ -73,8 +73,8 @@ namespace Infrastructure.Repositories.PostgressRepositories
             await _connection.OpenAsync();
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE users SET 
-                id = @Id
-                name = @Name",
+                name = @Name
+                WHERE id = @Id",
             new
             {
                 Id = user.ID,

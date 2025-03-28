@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var developerId = await _connection.QuerySingleAsync<int>(
-                @"INSERT INTO developers (name, description, logourl)
+                @"INSERT INTO developers (name, description, logo_url)
                 VALUES (@Name, @Description, @LogoURL)
                 RETURNING id",
                 new
@@ -49,7 +49,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var developers = await _connection.QueryAsync<Developer>(
-                @"SELECT id, name, description, logourl
+                @"SELECT id, name, description, logo_url
                 FROM developers");
             await _connection.CloseAsync();
             return developers;
@@ -59,7 +59,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var developer = await _connection.QueryFirstOrDefaultAsync<Developer>(
-                @"SELECT id, name, description, logourl
+                @"SELECT id, name, description, logo_url
                 FROM developers
                 WHERE id = @Id",
                 new
@@ -75,10 +75,10 @@ namespace Infrastructure.Repositories.PostgressRepositories
             await _connection.OpenAsync();
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE developers SET 
-                id = @Id
                 name = @Name
                 description = @Description
-                logourl = @LogoURL",
+                logo_url = @LogoURL
+                WHERE id = @Id",
             new
             {
                 Id = dev.ID,

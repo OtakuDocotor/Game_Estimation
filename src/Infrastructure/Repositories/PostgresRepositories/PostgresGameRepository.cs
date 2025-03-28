@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var gameId = await _connection.QuerySingleAsync<int>(
-                @"INSERT INTO games (name, averagescore, developerid)
+                @"INSERT INTO games (name, average_score, developer_id)
                 VALUES (@Name, @AverageScore, @DeveloperId)
                 RETURNING id",
                 new
@@ -49,7 +49,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var games = await _connection.QueryAsync<Game>(
-                @"SELECT id, name, averagescore, developerid
+                @"SELECT id, name, average_score, developer_id
                 FROM games");
             await _connection.CloseAsync();
             return games;
@@ -59,7 +59,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             await _connection.OpenAsync();
             var game = await _connection.QueryFirstOrDefaultAsync<Game>(
-                @"SELECT id, name, averagescore, developerid
+                @"SELECT id, name, average_score, developer_id
                 FROM games
                 WHERE id = @Id",
                 new
@@ -75,10 +75,10 @@ namespace Infrastructure.Repositories.PostgressRepositories
             await _connection.OpenAsync();
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE games SET 
-                id = @Id
                 name = @Name
-                averagescore = @AverageScore
-                developerId = @DeveloperId",
+                average_score = @AverageScore
+                developer_Id = @DeveloperId
+                WHERE id = @Id",
             new
             {
                 Id = game.ID,
