@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using Infrastructure.Repositories.Interfaces;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class ReviewRepository : IReviewRepository
+    class InMemoryReviewRepository : IReviewRepository
     {
         private List<Review> _reviews = new List<Review>();
 
-        public ReviewRepository()
+        public InMemoryReviewRepository()
         {
             _reviews = new List<Review>
             {

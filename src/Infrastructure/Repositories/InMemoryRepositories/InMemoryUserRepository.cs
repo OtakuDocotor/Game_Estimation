@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using Infrastructure.Repositories.Interfaces;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class UserRepository : IUserRepository
+    class InMemoryUserRepository : IUserRepository
     {
         private List<User> _users = new List<User>();
 
-        public UserRepository()
+        public InMemoryUserRepository()
         {
             _users = new List<User> { 
                 new User 

@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using Infrastructure.Repositories.Interfaces;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class DeveloperRepository : IDeveloperRepository
+    class InMemoryDeveloperRepository : IDeveloperRepository
     {
         private List<Developer> _developers = new List<Developer>();
 
-        public DeveloperRepository()
+        public InMemoryDeveloperRepository()
         {
             _developers = new List<Developer> 
             { 

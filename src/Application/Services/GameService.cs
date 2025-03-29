@@ -1,7 +1,7 @@
 ﻿using Application.DTO;
-using Infrastructure.Repositories;
 using AutoMapper;
 using Domain.Entities;
+using Infrastructure.Repositories.Interfaces;
 
 namespace Application.Services
 {

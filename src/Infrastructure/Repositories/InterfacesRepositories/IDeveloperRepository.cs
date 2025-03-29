@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories.Interfaces
 {
     public interface IDeveloperRepository
     {
