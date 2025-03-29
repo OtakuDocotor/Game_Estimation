@@ -3,11 +3,11 @@ using Infrastructure.Repositories.Interfaces;
 
 namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class PostgresDeveloperRepository : IDeveloperRepository
+    class InMemoryDeveloperRepository : IDeveloperRepository
     {
         private List<Developer> _developers = new List<Developer>();
 
-        public PostgresDeveloperRepository()
+        public InMemoryDeveloperRepository()
         {
             _developers = new List<Developer> 
             { 

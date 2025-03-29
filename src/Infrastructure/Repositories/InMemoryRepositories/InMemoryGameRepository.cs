@@ -3,11 +3,11 @@ using Infrastructure.Repositories.Interfaces;
 
 namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class PostgresGameRepository : IGameRepository
+    class InMemoryGameRepository : IGameRepository
     {
         private List<Game> _games = new List<Game>();
 
-        public PostgresGameRepository()
+        public InMemoryGameRepository()
         {
             _games = new List<Game> 
             {

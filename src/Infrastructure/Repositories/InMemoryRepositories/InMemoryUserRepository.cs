@@ -3,11 +3,11 @@ using Infrastructure.Repositories.Interfaces;
 
 namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class PostgresUserRepository : IUserRepository
+    class InMemoryUserRepository : IUserRepository
     {
         private List<User> _users = new List<User>();
 
-        public PostgresUserRepository()
+        public InMemoryUserRepository()
         {
             _users = new List<User> { 
                 new User 

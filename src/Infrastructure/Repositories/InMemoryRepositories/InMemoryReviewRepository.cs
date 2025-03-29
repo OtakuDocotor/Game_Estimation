@@ -3,11 +3,11 @@ using Infrastructure.Repositories.Interfaces;
 
 namespace Infrastructure.Repositories.InMemoryRepositories
 {
-    class PostgresReviewRepository : IReviewRepository
+    class InMemoryReviewRepository : IReviewRepository
     {
         private List<Review> _reviews = new List<Review>();
 
-        public PostgresReviewRepository()
+        public InMemoryReviewRepository()
         {
             _reviews = new List<Review>
             {
