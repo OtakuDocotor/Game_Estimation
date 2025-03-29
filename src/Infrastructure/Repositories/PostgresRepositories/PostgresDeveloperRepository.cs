@@ -70,13 +70,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
                 description = @Description
                 logo_url = @LogoURL
                 WHERE id = @Id",
-            new
-            {
-                Id = dev.ID,
-                Name = dev.Name,
-                Description = dev.Description,
-                LogoURL = dev.LogoURL
-            });
+                dev);
             return affectedRows > 0;
         }
     }
