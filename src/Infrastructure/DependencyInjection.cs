@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using System.Reflection;
-using migrationRunner = Infrastructure.Database.MigrationRunner.MigrationRunner;
+using MigrationRunner = Infrastructure.Database.MigrationRunner.MigrationRunner;
 
 namespace Infrastructure
 {
@@ -38,7 +38,7 @@ namespace Infrastructure
                 .WithGlobalConnectionString("PostgresDB")
                 .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
                 .AddLogging(lb => lb.AddFluentMigratorConsole());
-            services.AddScoped<migrationRunner>();
+            services.AddScoped<MigrationRunner>();
 
             return services;
         }
