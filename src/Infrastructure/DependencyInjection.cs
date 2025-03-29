@@ -21,8 +21,8 @@ namespace Infrastructure
 
             services.AddScoped(sp =>
             {
-                var datasource = sp.GetRequiredService<NpgsqlDataSource>();
-                return datasource.CreateConnection();
+                var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
+                return dataSource.CreateConnection();
             });
 
             services.AddTransient<IDeveloperRepository, PostgresDeveloperRepository>();

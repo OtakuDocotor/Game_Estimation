@@ -16,7 +16,6 @@ namespace Infrastructure.Repositories.PostgressRepositories
 
         public async Task<int> Create(Developer dev)
         {
-            await _connection.OpenAsync();
             var developerId = await _connection.QuerySingleAsync<int>(
                 @"INSERT INTO developers (name, description, logo_url)
                 VALUES (@Name, @Description, @LogoURL)
@@ -27,13 +26,11 @@ namespace Infrastructure.Repositories.PostgressRepositories
                     Description = dev.Description,
                     LogoURL = dev.LogoURL
                 });
-            await _connection.CloseAsync();
             return developerId;
         }
 
         public async Task<bool> Delete(int id)
         {
-            await _connection.OpenAsync();
             var affectedRows = await _connection.ExecuteAsync(
                 @"DELETE FROM developers
                 WHERE id = @Id",
@@ -41,23 +38,19 @@ namespace Infrastructure.Repositories.PostgressRepositories
                 {
                     Id = id
                 });
-            await _connection.CloseAsync();
             return affectedRows > 0;
         }
 
         public async Task<IEnumerable<Developer>> ReadAll()
         {
-            await _connection.OpenAsync();
             var developers = await _connection.QueryAsync<Developer>(
                 @"SELECT id, name, description, logo_url
                 FROM developers");
-            await _connection.CloseAsync();
             return developers;
         }
 
         public async Task<Developer?> ReadById(int id)
         {
-            await _connection.OpenAsync();
             var developer = await _connection.QueryFirstOrDefaultAsync<Developer>(
                 @"SELECT id, name, description, logo_url
                 FROM developers
@@ -66,13 +59,11 @@ namespace Infrastructure.Repositories.PostgressRepositories
                 {
                     Id = id
                 });
-            await _connection.CloseAsync();
             return developer;
         }
 
         public async Task<bool> Update(Developer dev)
         {
-            await _connection.OpenAsync();
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE developers SET 
                 name = @Name
@@ -86,7 +77,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
                 Description = dev.Description,
                 LogoURL = dev.LogoURL
             });
-            return affectedRows>0;
+            return affectedRows > 0;
         }
     }
 }
