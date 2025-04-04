@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Requests.ReviewRequests;
 
 namespace Application.Services
 {
@@ -6,8 +7,8 @@ namespace Application.Services
     {
         public Task<ReviewDTO?> ReadById(int id);
         public Task<IEnumerable<ReviewDTO>> ReadAll();
-        public Task<int> Create(ReviewDTO review);
-        public Task<bool> Update(ReviewDTO review);
+        public Task<int> Create(CreateReviewRequest review);
+        public Task<bool> Update(UpdateReviewRequest review);
         public Task<bool> Delete(int id);
     }
 }

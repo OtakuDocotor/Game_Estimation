@@ -66,8 +66,8 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE games SET 
-                name = @Name
-                average_score = @AverageScore
+                name = @Name,
+                average_score = @AverageScore,
                 developer_Id = @DeveloperId
                 WHERE id = @Id",
             new

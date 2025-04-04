@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Requests.GameRequests;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult>Create([FromBody] GameDTO game)
+        public async Task<IActionResult>Create([FromBody] CreateGameRequest game)
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +58,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(GameDTO game)
+        public async Task<IActionResult> Update(UpdateGameRequest game)
         {
             if (!ModelState.IsValid)
             {

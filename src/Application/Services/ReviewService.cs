@@ -1,5 +1,7 @@
 ﻿using Application.DTO;
+using Application.Requests.ReviewRequests;
 using AutoMapper;
+using Azure.Core;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
 
@@ -20,17 +22,19 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<int> Create(ReviewDTO review)
+        public async Task<int> Create(CreateReviewRequest request)
         {
-            var mappedReview = _mapper.Map<Review>(review);
-            var gameExists = await _gameRepository.ReadById(review.GameId) != null;
-            var userExists = await _userRepository.ReadById(review.UserId) != null;
-            if (mappedReview != null && gameExists && userExists)
+            var gameExists = await _gameRepository.ReadById(request.GameId) != null;
+            var userExists = await _userRepository.ReadById(request.UserId) != null;
+            var review = new Review()
             {
-               var id = await _reviewRepository.Create(mappedReview);
-                return id;
-            }
-            return 0;
+                Name = request.Name,
+                Content = request.Content,
+                GameId = request.GameId,
+                UserId = request.UserId 
+            };
+
+            return await _reviewRepository.Create(review);
         }
 
         public async Task<bool> Delete(int id)
@@ -52,14 +56,17 @@ namespace Application.Services
             return mappedReview;
         }
 
-        public async Task<bool> Update(ReviewDTO review)
+        public async Task<bool> Update(UpdateReviewRequest request)
         {
-            var mappedReview = _mapper.Map<Review>(review);
-            if (mappedReview != null)
+            var review = new Review()
             {
-                return await _reviewRepository.Update(mappedReview);
-            }
-            return false;
+                ID = request.ID,
+                Name = request.Name,
+                Content = request.Content,
+                GameId = request.GameId,
+                UserId = request.UserId
+            };
+            return await _reviewRepository.Update(review);
         }
     }
 }

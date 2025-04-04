@@ -68,7 +68,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE reviews SET 
-                name = @Name
+                name = @Name,
                 content = @Content,
                 score = @Score,
                 user_id = @UserId,

@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Requests.ReviewRequests;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ReviewDTO review)
+        public async Task<IActionResult> Create([FromBody] CreateReviewRequest review)
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +58,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(ReviewDTO review)
+        public async Task<IActionResult> Update(UpdateReviewRequest review)
         {
             if (!ModelState.IsValid)
             {

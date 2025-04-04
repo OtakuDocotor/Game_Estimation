@@ -66,11 +66,17 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE developers SET 
-                name = @Name
-                description = @Description
+                name = @Name,
+                description = @Description,
                 logo_url = @LogoURL
                 WHERE id = @Id",
-                dev);
+                new
+                { 
+                    dev.Name, 
+                    dev.Description, 
+                    dev.LogoURL,
+                    dev.ID 
+                });
             return affectedRows > 0;
         }
     }

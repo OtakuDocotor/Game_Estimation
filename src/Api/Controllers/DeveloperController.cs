@@ -3,6 +3,7 @@ using Application;
 using Application.Services;
 using Application.DTO;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Application.Requests.DeveloperRequests;
 
 namespace Api.Controllers
 {
@@ -18,7 +19,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] DeveloperDTO developer)
+        public async Task<IActionResult> Create([FromBody] CreateDeveloperRequest developer)
         {
             if (!ModelState.IsValid)
             {
@@ -59,7 +60,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(DeveloperDTO developer)
+        public async Task<IActionResult> Update(UpdateDeveloperRequest developer)
         {
             if (!ModelState.IsValid)
             {

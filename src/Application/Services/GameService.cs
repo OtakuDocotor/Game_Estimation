@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Requests.GameRequests;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
@@ -20,15 +21,16 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<int> Create(GameDTO game)
+        public async Task<int> Create(CreateGameRequest request)
         {
-            var mappedGame = _mapper.Map<Game>(game);
-            if (mappedGame != null && await _developerRepository.ReadById(game.DeveloperId) != null)
-            {
-                var id = await _gameRepository.Create(mappedGame);
-                return id;
-            }
-            return 0;
+            var game = new Game()
+            { 
+                Name = request.Name,
+                AverageScore = request.AverageScore,
+                DeveloperId = request.DeveloperId
+            };
+
+            return await _gameRepository.Create(game);
         }
 
         public async Task<bool> Delete(int id)
@@ -61,14 +63,17 @@ namespace Application.Services
             return mappedGame;
         }
 
-        public async Task<bool> Update(GameDTO game)
+        public async Task<bool> Update(UpdateGameRequest request)
         {
-            var mappedGames = _mapper.Map<Game>(game);
-            if (mappedGames != null)
+            var game = new Game()
             {
-                return await _gameRepository.Update(mappedGames);
-            }
-            return false;
+                ID = request.ID,
+                Name = request.Name,
+                AverageScore = request.AverageScore,
+                DeveloperId = request.DeveloperId
+            };
+
+            return await _gameRepository.Update(game);
         }
     }
 }

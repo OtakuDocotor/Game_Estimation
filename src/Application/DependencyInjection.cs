@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Application.Mappings;
 using Application.Services;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using System.Reflection;
 
 namespace Application
 {
@@ -13,6 +16,11 @@ namespace Application
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<IUserService, UserService>();
+
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
             return services;
         }
     }

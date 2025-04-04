@@ -1,5 +1,7 @@
 ﻿using Application.DTO;
+using Application.Requests.DeveloperRequests;
 using AutoMapper;
+using Azure.Core;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
 
@@ -20,15 +22,15 @@ namespace Application.Services
             _reviewRepository = reviewRepository;
         }
 
-        public async Task<int> Create(DeveloperDTO dev)
+        public async Task<int> Create(CreateDeveloperRequest request)
         {
-            var mappedDeveloper = _mapper.Map<Developer>(dev);
-            if (mappedDeveloper != null)
+            var developer = new Developer
             {
-                var id = await _developerRepository.Create(mappedDeveloper);
-                return id;
-            }
-            return 0;
+                Name = request.Name,
+                Description = request.Description,
+                LogoURL = request.LogoURL
+            };
+            return await _developerRepository.Create(developer);
         }
 
         public async Task<bool> Delete(int id)
@@ -60,14 +62,16 @@ namespace Application.Services
             return mappedDeveloper;
         }
 
-        public async Task<bool> Update(DeveloperDTO dev)
+        public async Task<bool> Update(UpdateDeveloperRequest request)
         {
-            var mappedDeveloper = _mapper.Map<Developer>(dev);
-            if (mappedDeveloper != null)
+            var developer = new Developer
             {
-                return await _developerRepository.Update(mappedDeveloper);
-            }
-            return false;
+                ID = request.ID,
+                Name = request.Name,
+                Description = request.Description,
+                LogoURL = request.LogoURL
+            };
+            return await _developerRepository.Update(developer);
         }
     }
 }

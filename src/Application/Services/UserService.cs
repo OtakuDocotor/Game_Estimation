@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Requests.UserRequest;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
@@ -18,15 +19,14 @@ namespace Application.Services
             _reviewRepository = reviewRepository;
         }
 
-        public async Task<int> Create(UserDTO user)
+        public async Task<int> Create(CreateUserRequest request)
         {
-            var mappedUser = _mapper.Map<User>(user);
-            if (mappedUser != null)
-            {
-                var id = await _userRepository.Create(mappedUser);
-                return id;
-            }
-            return 0;
+            var user = new User
+            { 
+                Name = request.Name
+            };
+
+            return await _userRepository.Create(user);
         }
 
         public async Task<bool> Delete(int id)
@@ -58,14 +58,15 @@ namespace Application.Services
             return mappedUser;
         }
 
-        public async Task<bool> Update(UserDTO user)
+        public async Task<bool> Update(UpdateUserRequest request)
         {
-            var mappedUser = _mapper.Map<User>(user);
-            if (mappedUser != null)
+            var user = new User
             {
-                return await _userRepository.Update(mappedUser);
-            }
-            return false;
+                ID = request.ID,
+                Name = request.Name
+            };
+
+            return await _userRepository.Update(user);
         }
     }
 }
