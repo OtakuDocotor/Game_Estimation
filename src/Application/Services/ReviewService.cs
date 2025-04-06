@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
 using Application.Requests.ReviewRequests;
 using AutoMapper;
 using Azure.Core;
@@ -24,8 +25,6 @@ namespace Application.Services
 
         public async Task<int> Create(CreateReviewRequest request)
         {
-            var gameExists = await _gameRepository.ReadById(request.GameId) != null;
-            var userExists = await _userRepository.ReadById(request.UserId) != null;
             var review = new Review()
             {
                 Name = request.Name,
@@ -39,7 +38,12 @@ namespace Application.Services
 
         public async Task<bool> Delete(int id)
         {
-            return await _reviewRepository.Delete(id);
+            var deleteResult = await _reviewRepository.Delete(id);
+            if (!deleteResult)
+            {
+                throw new EntityDeleteException("Review not deleted");
+            }
+            return deleteResult;
         }
 
         public async Task<IEnumerable<ReviewDTO>> ReadAll()
@@ -52,6 +56,10 @@ namespace Application.Services
         public async Task<ReviewDTO?> ReadById(int id)
         {
             var review = await _reviewRepository.ReadById(id);
+            if (review == null)
+            {
+                throw new NotFoundApplicationException("Review not found");
+            }
             var mappedReview =_mapper.Map<ReviewDTO>(review);
             return mappedReview;
         }
@@ -66,7 +74,13 @@ namespace Application.Services
                 GameId = request.GameId,
                 UserId = request.UserId
             };
-            return await _reviewRepository.Update(review);
+
+            var updateResult = await _reviewRepository.Update(review);
+            if (!updateResult)
+            {
+                throw new EntityUpdateException("Review not update");
+            }
+            return updateResult;
         }
     }
 }

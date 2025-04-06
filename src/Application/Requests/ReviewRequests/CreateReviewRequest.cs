@@ -15,10 +15,10 @@ namespace Application.Requests.ReviewRequests
     {
         public CreateViewRequestValidator()
         {
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(100).WithMessage("{PropertyName} has 100 maxlength");
-            RuleFor(x => x.UserId).NotEmpty().GreaterThan(0).LessThan(int.MaxValue);
-            RuleFor(x => x.GameId).NotEmpty().GreaterThan(0).LessThan(int.MaxValue);
-            RuleFor(x => x.Score).GreaterThan(0).WithMessage("Score must be greater than zero").LessThanOrEqualTo(10).WithMessage("Score must be less or equal to 10");
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.UserId).NotEmpty().ExclusiveBetween(0,int.MaxValue);
+            RuleFor(x => x.GameId).NotEmpty().ExclusiveBetween(0, int.MaxValue);
+            RuleFor(x => x.Score).ExclusiveBetween(0, int.MaxValue);
         }
     }
 }

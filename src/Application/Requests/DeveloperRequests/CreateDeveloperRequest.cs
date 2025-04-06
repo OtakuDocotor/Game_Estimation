@@ -13,8 +13,8 @@ namespace Application.Requests.DeveloperRequests
     {
         public CreateDeveloperRequestValidator()
         {
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(100).WithMessage("{PropertyName} has 100 maxlength");
-            RuleFor(x => x.Description).MaximumLength(1000);
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.Description).MaximumLength(ValidationConstants.MaxDescriptionLength);
             RuleFor(x => x.LogoURL).MaximumLength(500);
         }
     }

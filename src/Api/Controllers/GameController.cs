@@ -19,10 +19,6 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult>Create([FromBody] CreateGameRequest game)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var gameId = await _gameService.Create(game);
             var result = new { id = gameId };
             return CreatedAtAction(nameof(ReadById), new { id = gameId }, result);
@@ -60,10 +56,6 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateGameRequest game)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await _gameService.Update(game);
             if (result)
             {

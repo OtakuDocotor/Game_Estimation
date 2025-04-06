@@ -11,7 +11,7 @@ namespace Application.Requests.UserRequest
     { 
         public CreateUserRequestValidator()
         {
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(100).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
         }
     }
 }

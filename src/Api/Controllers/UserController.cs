@@ -19,10 +19,6 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequest user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var userId = await _userService.Create(user);
             var result = new { id = userId };
             return CreatedAtAction(nameof(ReadById), new { id = userId }, result);
@@ -60,10 +56,6 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateUserRequest user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await _userService.Update(user);
             if (result)
             {

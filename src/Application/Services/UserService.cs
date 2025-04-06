@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
 using Application.Requests.UserRequest;
 using AutoMapper;
 using Domain.Entities;
@@ -34,14 +35,19 @@ namespace Application.Services
             var user = await ReadById(id);
             if (user != null)
             {
-                var reviews = (await _reviewRepository.ReadAll()).ToList();
-                var reviewsToDelete = reviews.FindAll(x => x.UserId == id);
+                var reviewsToDelete = (await _reviewRepository.GetAllByUser(id)).ToList();
                 if (reviewsToDelete != null)
                 {
                     reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
                 }
             }
-            return await _userRepository.Delete(id);
+
+            var deleteResult = await _userRepository.Delete(id);
+            if (!deleteResult)
+            {
+                throw new EntityDeleteException("User not delete");
+            }
+            return deleteResult;
         }
 
         public async Task<IEnumerable<UserDTO>> ReadAll()
@@ -66,7 +72,12 @@ namespace Application.Services
                 Name = request.Name
             };
 
-            return await _userRepository.Update(user);
+            var updateResult = await _userRepository.Update(user);
+            if (!updateResult)
+            {
+                throw new EntityUpdateException("User not updated");
+            }
+            return updateResult;
         }
     }
 }

@@ -21,10 +21,6 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDeveloperRequest developer)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var developerId = await _developerService.Create(developer);
             var result = new { Id = developerId };
             return CreatedAtAction(nameof(ReadById), new { id = developerId }, result);
@@ -62,10 +58,6 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateDeveloperRequest developer)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await _developerService.Update(developer);
             if (result)
             {

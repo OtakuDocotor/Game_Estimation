@@ -34,6 +34,16 @@ namespace Infrastructure.Repositories.InMemoryRepositories
             return Task.FromResult(true);
         }
 
+        public Task<IEnumerable<Review>> GetAllByGame(int gameId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Review>> GetAllByUser(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Review>> ReadAll()
         {
             return Task.FromResult(_reviews.AsEnumerable());

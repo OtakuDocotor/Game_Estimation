@@ -12,8 +12,8 @@ namespace Application.Requests.UserRequest
     {
         public UpdateUserRequestValidator()
         {
-            RuleFor(x => x.ID).NotEmpty().GreaterThan(0).LessThan(int.MaxValue);
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(100).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.ID).NotEmpty().ExclusiveBetween(0,int.MaxValue);
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
         }
     }
 

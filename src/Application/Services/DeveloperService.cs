@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
 using Application.Requests.DeveloperRequests;
 using AutoMapper;
 using Azure.Core;
@@ -43,9 +44,15 @@ namespace Application.Services
                     x.Reviews.ForEach(async y => await _reviewRepository.Delete(y.ID));
                     await _gameRepository.Delete(x.ID);
                 });
-                return await _developerRepository.Delete(id);
+
+                var deleteResult = await _developerRepository.Delete(id);
+                if (!deleteResult)
+                {
+                    throw new EntityDeleteException("Developer not deleted");
+                }
+                return deleteResult;
             }
-            return false;
+            throw new EntityDeleteException("Developer not deleted");
         }
 
         public async Task<IEnumerable<DeveloperDTO>> ReadAll()
@@ -58,6 +65,10 @@ namespace Application.Services
         public async Task<DeveloperDTO?> ReadById(int id)
         {
             var developer = await _developerRepository.ReadById(id);
+            if (developer == null)
+            {
+                throw new NotFoundApplicationException("Developer not found");
+            }
             var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
             return mappedDeveloper;
         }
@@ -71,7 +82,13 @@ namespace Application.Services
                 Description = request.Description,
                 LogoURL = request.LogoURL
             };
-            return await _developerRepository.Update(developer);
+
+            var updateResult = await _developerRepository.Update(developer);
+            if (!updateResult)
+            {
+                throw new EntityUpdateException("Developer not updated.");
+            }
+            return updateResult;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Application.Exceptions
         {
         }
 
-        public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
+        public override HttpStatusCode StatusCode => HttpStatusCode.NotFound;
         public override string Title => "Entity not found";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
 using Application.Requests.GameRequests;
 using AutoMapper;
 using Domain.Entities;
@@ -38,15 +39,20 @@ namespace Application.Services
             var game = await ReadById(id);
             if (game != null)
             {
-                var reviews = (await _reviewRepository.ReadAll()).ToList();
-                var reviewsToDelete = reviews.FindAll(x => x.GameId == id);
+                var reviewsToDelete = (await _reviewRepository.GetAllByGame(id)).ToList();
                 if (reviewsToDelete != null)
                 {
                     reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
                 }
-                return await _gameRepository.Delete(id);
+
+                var deleteResult = await _gameRepository.Delete(id);
+                if (!deleteResult)
+                {
+                    throw new EntityDeleteException("Game not deleted");
+                }
+                return deleteResult;
             }
-            return false;
+            throw new EntityDeleteException("Game not deleted");
         }
 
         public async Task<IEnumerable<GameDTO>> ReadAll()
@@ -59,6 +65,10 @@ namespace Application.Services
         public async Task<GameDTO?> ReadById(int id)
         {
             var game = await _gameRepository.ReadById(id);
+            if (game == null)
+            {
+                throw new NotFoundApplicationException("Game not found");
+            }
             var mappedGame = _mapper.Map<GameDTO>(game);
             return mappedGame;
         }
@@ -73,7 +83,12 @@ namespace Application.Services
                 DeveloperId = request.DeveloperId
             };
 
-            return await _gameRepository.Update(game);
+            var upadateResult = await _gameRepository.Update(game);
+            if (!upadateResult)
+            {
+                throw new EntityUpdateException("Game not delete");
+            }
+            return upadateResult;
         }
     }
 }

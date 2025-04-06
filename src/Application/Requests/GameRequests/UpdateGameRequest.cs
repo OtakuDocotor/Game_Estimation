@@ -14,10 +14,10 @@ namespace Application.Requests.GameRequests
     {
         public UpdateGameRequestValidator()
         {
-            RuleFor(x => x.ID).NotEmpty().GreaterThan(0).LessThan(int.MaxValue);
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(100).WithMessage("{PropertyName} has 100 maxlength");
-            RuleFor(x => x.AverageScore).GreaterThan(0).WithMessage("AVG score must be greater than zero").LessThanOrEqualTo(10).WithMessage("AVG score must be less or equal to 10");
-            RuleFor(x => x.DeveloperId).NotEmpty().GreaterThan(0).LessThan(int.MaxValue);
+            RuleFor(x => x.ID).NotEmpty().ExclusiveBetween(0,int.MaxValue);
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.AverageScore).ExclusiveBetween(0, int.MaxValue);
+            RuleFor(x => x.DeveloperId).NotEmpty().ExclusiveBetween(0, int.MaxValue);
         }
     }
 }

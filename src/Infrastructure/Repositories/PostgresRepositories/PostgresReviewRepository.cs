@@ -85,5 +85,31 @@ namespace Infrastructure.Repositories.PostgressRepositories
             });
             return affectedRows > 0;
         }
+
+        public async Task<IEnumerable<Review>> GetAllByGame(int gameId)
+        {
+            var reviews = await _connection.QueryAsync<Review>(
+                @"SELECT id, name, content, score, user_id, game_id
+                FROM reviews
+                WHERE game_id = @GameId ",
+                new 
+                {
+                    GameId = gameId 
+                });
+            return reviews;
+        }
+
+        public async Task<IEnumerable<Review>> GetAllByUser(int userId)
+        {
+            var reviews = await _connection.QueryAsync<Review>(
+                @"SELECT id, name, content, score, user_id, game_id
+                FROM reviews
+                WHERE user_id = @UserId ",
+                new
+                {
+                    UserId = userId
+                });
+            return reviews;
+        }
     }
 }

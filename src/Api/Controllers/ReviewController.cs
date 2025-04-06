@@ -19,10 +19,6 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateReviewRequest review)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var reviewId = await _reviewService.Create(review);
             var result = new { Id = reviewId };
             return CreatedAtAction(nameof(ReadById), new { id = reviewId }, result);
@@ -60,10 +56,6 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateReviewRequest review)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await _reviewService.Update(review);
             if (result)
             {
