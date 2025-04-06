@@ -2,9 +2,9 @@
 using Application.Exceptions;
 using Application.Requests.DeveloperRequests;
 using AutoMapper;
-using Azure.Core;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Npgsql;
 
 namespace Application.Services
 {
@@ -14,13 +14,15 @@ namespace Application.Services
         private readonly IGameRepository _gameRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
+        private readonly NpgsqlConnection _connection;
 
-        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository)
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository,NpgsqlConnection connection)
         {
             _developerRepository = developerRepository;
             _mapper = mapper;
             _gameRepository = gameRepository;
             _reviewRepository = reviewRepository;
+            _connection = connection;
         }
 
         public async Task<int> Create(CreateDeveloperRequest request)
@@ -34,25 +36,42 @@ namespace Application.Services
             return await _developerRepository.Create(developer);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-            var developer = await ReadById(id);
-            if (developer != null)
-            {
-                developer.Games.ForEach(async x =>
-                {
-                    x.Reviews.ForEach(async y => await _reviewRepository.Delete(y.ID));
-                    await _gameRepository.Delete(x.ID);
-                });
+            await _connection.OpenAsync();
+            await using var transaction = await _connection.BeginTransactionAsync();
 
-                var deleteResult = await _developerRepository.Delete(id);
-                if (!deleteResult)
+            try
+            {
+                var developer = await ReadById(id);
+                if (developer != null)
                 {
-                    throw new EntityDeleteException("Developer not deleted");
+                    var gamesToDelete = (await _gameRepository.GamesByDeveloper(id)).ToList();
+                    if (gamesToDelete != null)
+                        gamesToDelete.ForEach(async x =>
+                        {
+                            await _reviewRepository.DeleteByGameId(x.ID);
+                            await _gameRepository.Delete(x.ID);
+                        });
+
+                    var deleteResult = await _developerRepository.Delete(id);
+                    if (!deleteResult)
+                    {
+                        throw new InvalidOperationException("Developer not deleted");
+                    }
                 }
-                return deleteResult;
+                else
+                    new InvalidOperationException("Developer not deleted");
+
+                await transaction.CommitAsync();
             }
-            throw new EntityDeleteException("Developer not deleted");
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw new EntityDeleteException($"Error deleting developer {id}");
+            }
+
+            await _connection.CloseAsync();
         }
 
         public async Task<IEnumerable<DeveloperDTO>> ReadAll()
@@ -73,7 +92,7 @@ namespace Application.Services
             return mappedDeveloper;
         }
 
-        public async Task<bool> Update(UpdateDeveloperRequest request)
+        public async Task Update(UpdateDeveloperRequest request)
         {
             var developer = new Developer
             {
@@ -88,7 +107,6 @@ namespace Application.Services
             {
                 throw new EntityUpdateException("Developer not updated.");
             }
-            return updateResult;
         }
     }
 }

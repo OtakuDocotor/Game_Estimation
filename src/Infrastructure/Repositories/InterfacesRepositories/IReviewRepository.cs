@@ -11,5 +11,7 @@ namespace Infrastructure.Repositories.Interfaces
         public Task<bool> Delete(int id);
         public Task<IEnumerable<Review>> GetAllByGame(int gameId);
         public Task<IEnumerable<Review>> GetAllByUser(int userId);
+        public Task<bool> DeleteByUserId(int userId);
+        public Task<bool> DeleteByGameId(int gameId);
     }
 }

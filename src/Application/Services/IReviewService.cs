@@ -8,7 +8,7 @@ namespace Application.Services
         public Task<ReviewDTO?> ReadById(int id);
         public Task<IEnumerable<ReviewDTO>> ReadAll();
         public Task<int> Create(CreateReviewRequest review);
-        public Task<bool> Update(UpdateReviewRequest review);
-        public Task<bool> Delete(int id);
+        public Task Update(UpdateReviewRequest review);
+        public Task Delete(int id);
     }
 }

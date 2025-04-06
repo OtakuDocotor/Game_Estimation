@@ -23,18 +23,14 @@ namespace Api.Controllers
         {
             var developerId = await _developerService.Create(developer);
             var result = new { Id = developerId };
-            return CreatedAtAction(nameof(ReadById), new { id = developerId }, result);
+            return CreatedAtAction(nameof(ReadById), result, result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _developerService.Delete(id);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _developerService.Delete(id);
+            return NoContent();
         }
 
         [HttpGet]
@@ -48,22 +44,14 @@ namespace Api.Controllers
         public async Task<IActionResult> ReadById(int id)
         {
             var result = await _developerService.ReadById(id);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UpdateDeveloperRequest developer)
         {
-            var result = await _developerService.Update(developer);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _developerService.Update(developer);
+            return NoContent();
         }
     }
 }

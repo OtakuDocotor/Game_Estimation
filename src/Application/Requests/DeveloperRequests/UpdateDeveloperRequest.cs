@@ -15,7 +15,7 @@ namespace Application.Requests.DeveloperRequests
         public UpdateDeveloperRequestValidator()
         {
             RuleFor(x => x.ID).NotEmpty().ExclusiveBetween(0, int.MaxValue);
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLength);
             RuleFor(x => x.Description).MaximumLength(ValidationConstants.MaxDescriptionLength);
             RuleFor(x => x.LogoURL).MaximumLength(500);
         }

@@ -17,7 +17,7 @@ namespace Application.Requests.ReviewRequests
         public UpdateReviewRequestValidator()
         {
             RuleFor(x => x.ID).NotEmpty().ExclusiveBetween(0, int.MaxValue);
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLength);
             RuleFor(x => x.UserId).NotEmpty().ExclusiveBetween(0, int.MaxValue);
             RuleFor(x => x.GameId).NotEmpty().ExclusiveBetween(0, int.MaxValue);
             RuleFor(x => x.Score).ExclusiveBetween(0, int.MaxValue);

@@ -111,5 +111,29 @@ namespace Infrastructure.Repositories.PostgressRepositories
                 });
             return reviews;
         }
+
+        public async Task<bool> DeleteByUserId(int userId)
+        {
+            var affectedRows = await _connection.ExecuteAsync(
+                @"DELETE FROM reviews
+                WHERE user_id = @UserId",
+                new
+                {
+                    UserId = userId
+                });
+            return affectedRows > 0;
+        }
+
+        public async Task<bool> DeleteByGameId(int gameId)
+        {
+            var affectedRows = await _connection.ExecuteAsync(
+                @"DELETE FROM reviews
+                WHERE game_id = @GameId",
+                new
+                {
+                    GameId = gameId
+                });
+            return affectedRows > 0;
+        }
     }
 }

@@ -36,14 +36,13 @@ namespace Application.Services
             return await _reviewRepository.Create(review);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
             var deleteResult = await _reviewRepository.Delete(id);
             if (!deleteResult)
             {
                 throw new EntityDeleteException("Review not deleted");
             }
-            return deleteResult;
         }
 
         public async Task<IEnumerable<ReviewDTO>> ReadAll()
@@ -64,7 +63,7 @@ namespace Application.Services
             return mappedReview;
         }
 
-        public async Task<bool> Update(UpdateReviewRequest request)
+        public async Task Update(UpdateReviewRequest request)
         {
             var review = new Review()
             {
@@ -80,7 +79,6 @@ namespace Application.Services
             {
                 throw new EntityUpdateException("Review not update");
             }
-            return updateResult;
         }
     }
 }

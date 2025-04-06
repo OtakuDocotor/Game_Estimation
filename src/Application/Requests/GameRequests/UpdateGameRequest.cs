@@ -15,7 +15,7 @@ namespace Application.Requests.GameRequests
         public UpdateGameRequestValidator()
         {
             RuleFor(x => x.ID).NotEmpty().ExclusiveBetween(0,int.MaxValue);
-            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLenght).WithMessage("{PropertyName} has 100 maxlength");
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(ValidationConstants.MaxNameLength);
             RuleFor(x => x.AverageScore).ExclusiveBetween(0, int.MaxValue);
             RuleFor(x => x.DeveloperId).NotEmpty().ExclusiveBetween(0, int.MaxValue);
         }

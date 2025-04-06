@@ -41,6 +41,16 @@ namespace Infrastructure.Repositories.InMemoryRepositories
             return Task.FromResult(true);
         }
 
+        public Task<bool> DeleteByDeveloper(int developerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Game>> GamesByDeveloper(int developerId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Game>> ReadAll()
         {
             return Task.FromResult(_games.AsEnumerable());

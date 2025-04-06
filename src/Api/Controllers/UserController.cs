@@ -21,18 +21,14 @@ namespace Api.Controllers
         {
             var userId = await _userService.Create(user);
             var result = new { id = userId };
-            return CreatedAtAction(nameof(ReadById), new { id = userId }, result);
+            return CreatedAtAction(nameof(ReadById), result, result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _userService.Delete(id);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _userService.Delete(id);
+            return NoContent();
         }
 
         [HttpGet]
@@ -46,22 +42,14 @@ namespace Api.Controllers
         public async Task<IActionResult> ReadById(int id)
         {
             var result = await _userService.ReadById(id);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UpdateUserRequest user)
         {
-            var result = await _userService.Update(user);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _userService.Update(user);
+            return NoContent();
         }
     }
 }

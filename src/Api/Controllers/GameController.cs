@@ -21,18 +21,14 @@ namespace Api.Controllers
         {
             var gameId = await _gameService.Create(game);
             var result = new { id = gameId };
-            return CreatedAtAction(nameof(ReadById), new { id = gameId }, result);
+            return CreatedAtAction(nameof(ReadById), result, result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _gameService.Delete(id);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _gameService.Delete(id);
+            return NoContent();
         }
 
         [HttpGet]
@@ -46,22 +42,14 @@ namespace Api.Controllers
         public async Task<IActionResult> ReadById(int id)
         {
             var result = await _gameService.ReadById(id);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UpdateGameRequest game)
         {
-            var result = await _gameService.Update(game);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _gameService.Update(game);
+            return NoContent();
         }
     }
 }

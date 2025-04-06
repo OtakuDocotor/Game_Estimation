@@ -8,7 +8,7 @@ namespace Application.Services
         public Task<UserDTO?> ReadById(int id);
         public Task<IEnumerable<UserDTO>> ReadAll();
         public Task<int> Create(CreateUserRequest user);
-        public Task<bool> Update(UpdateUserRequest user);
-        public Task<bool> Delete(int id);
+        public Task Update(UpdateUserRequest user);
+        public Task Delete(int id);
     }
 }

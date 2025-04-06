@@ -34,6 +34,16 @@ namespace Infrastructure.Repositories.InMemoryRepositories
             return Task.FromResult(true);
         }
 
+        public Task<bool> DeleteByGameId(int gameId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteByUserId(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Review>> GetAllByGame(int gameId)
         {
             throw new NotImplementedException();

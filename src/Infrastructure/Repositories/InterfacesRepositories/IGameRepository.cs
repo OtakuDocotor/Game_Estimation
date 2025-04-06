@@ -9,5 +9,7 @@ namespace Infrastructure.Repositories.Interfaces
         public Task<int> Create(Game game);
         public Task<bool> Update(Game game);
         public Task<bool> Delete(int id);
+        public Task<IEnumerable<Game>> GamesByDeveloper(int developerId);
+        public Task<bool> DeleteByDeveloper(int developerId);
     }
 }
