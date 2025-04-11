@@ -64,14 +64,12 @@ namespace Application.Services
 
         public async Task Update(UpdateReviewRequest request)
         {
-            var review = new Review()
-            {
-                ID = request.ID,
-                Name = request.Name,
-                Content = request.Content,
-                GameId = request.GameId,
-                UserId = request.UserId
-            };
+            var review = await _reviewRepository.ReadById(request.ID);
+            review.ChangeName(request.Name);
+            review.ChangeContent(request.Content);
+            review.ChangeUser(request.UserId);
+            review.ChangeGame(request.GameId);
+            review.ChangeScore(request.Score);
 
             var updateResult = await _reviewRepository.Update(review);
             if (!updateResult)

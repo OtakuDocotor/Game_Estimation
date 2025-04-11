@@ -85,13 +85,10 @@ namespace Application.Services
 
         public async Task Update(UpdateGameRequest request)
         {
-            var game = new Game()
-            {
-                ID = request.ID,
-                Name = request.Name,
-                AverageScore = request.AverageScore,
-                DeveloperId = request.DeveloperId
-            };
+            var game = await _gameRepository.ReadById(request.ID);
+            game.ChangeName(request.Name);
+            game.ChangeDeveloper(request.DeveloperId);
+            game.ChangeAvgScore(request.AverageScore);
 
             var updateResult = await _gameRepository.Update(game);
             if (!updateResult)

@@ -14,7 +14,7 @@ namespace Domain.Entities
             this.Name = name;
         }
 
-        public void ChangeName(double avgScore)
+        public void ChangeAvgScore(double avgScore)
         {
             this.AverageScore = avgScore;
         }

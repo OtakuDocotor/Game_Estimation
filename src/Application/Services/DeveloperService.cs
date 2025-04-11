@@ -90,13 +90,10 @@ namespace Application.Services
 
         public async Task Update(UpdateDeveloperRequest request)
         {
-            var developer = new Developer
-            {
-                ID = request.ID,
-                Name = request.Name,
-                Description = request.Description,
-                LogoURL = request.LogoURL
-            };
+            var developer = await _developerRepository.ReadById(request.ID);
+            developer.ChangeName(request.Name);
+            developer.ChangeDescription(request.Description);
+            developer.ChangeLogo(request.LogoURL);
 
             var updateResult = await _developerRepository.Update(developer);
             if (!updateResult)

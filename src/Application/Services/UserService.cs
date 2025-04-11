@@ -77,11 +77,8 @@ namespace Application.Services
 
         public async Task Update(UpdateUserRequest request)
         {
-            var user = new User
-            {
-                ID = request.ID,
-                Name = request.Name
-            };
+            var user = await _userRepository.ReadById(request.ID);
+            user.ChangeName(request.Name);
 
             var updateResult = await _userRepository.Update(user);
             if (!updateResult)
