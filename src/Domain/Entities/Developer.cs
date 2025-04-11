@@ -8,5 +8,20 @@ namespace Domain.Entities
         public string Description { get; set; }
         public List<Game> Games { get; set; }
         public string LogoURL { get; set; }
+
+        public void ChangeName(string name)
+        {
+            this.Name = name;
+        }
+
+        public void ChangeDescription(string description)
+        {
+            this.Description = description;
+        }
+
+        public void ChangeLogo(string logo)
+        {
+            this.LogoURL = logo;
+        }
     }
 }

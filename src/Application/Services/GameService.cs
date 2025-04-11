@@ -44,19 +44,13 @@ namespace Application.Services
 
             try
             {
-                var game = await ReadById(id);
-                if (game != null)
-                {
-                    await _reviewRepository.DeleteByGameId(id);
+                await _reviewRepository.DeleteByGameId(id);
 
-                    var deleteResult = await _gameRepository.Delete(id);
-                    if (!deleteResult)
-                    {
-                        throw new InvalidOperationException("Game not deleted");
-                    }
-                }
-                else
+                var deleteResult = await _gameRepository.Delete(id);
+                if (!deleteResult)
+                {
                     throw new InvalidOperationException("Game not deleted");
+                }
 
                 await transaction.CommitAsync();
             }
@@ -65,8 +59,10 @@ namespace Application.Services
                 await transaction.RollbackAsync();
                 throw new EntityDeleteException($"Error deleting game {id}");
             }
-
-            await _connection.CloseAsync();
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
 
         public async Task<IEnumerable<GameDTO>> ReadAll()
@@ -76,7 +72,7 @@ namespace Application.Services
             return mappedGames;
         }
 
-        public async Task<GameDTO?> ReadById(int id)
+        public async Task<GameDTO> ReadById(int id)
         {
             var game = await _gameRepository.ReadById(id);
             if (game == null)
@@ -97,8 +93,8 @@ namespace Application.Services
                 DeveloperId = request.DeveloperId
             };
 
-            var upadateResult = await _gameRepository.Update(game);
-            if (!upadateResult)
+            var updateResult = await _gameRepository.Update(game);
+            if (!updateResult)
             {
                 throw new EntityUpdateException("Game not delete");
             }

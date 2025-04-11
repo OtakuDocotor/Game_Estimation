@@ -7,6 +7,21 @@ namespace Domain.Entities
         public string Name { get; set; }
         public double AverageScore { get; set; }
         public int DeveloperId { get; set; }
-        public List<Review> Reviews { get; set; } 
+        public List<Review> Reviews { get; set; }
+
+        public void ChangeName(string name)
+        {
+            this.Name = name;
+        }
+
+        public void ChangeName(double avgScore)
+        {
+            this.AverageScore = avgScore;
+        }
+
+        public void ChangeDeveloper(int id)
+        {
+            this.DeveloperId = id;
+        }
     }
 }

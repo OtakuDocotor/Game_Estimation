@@ -40,29 +40,25 @@ namespace Application.Services
 
             try
             {
-                var user = await ReadById(id);
-                if (user != null)
+                await _reviewRepository.DeleteByUserId(id);
+
+                var deleteResult = await _userRepository.Delete(id);
+                if (!deleteResult)
                 {
-                    await _reviewRepository.DeleteByUserId(id);
-
-                    var deleteResult = await _userRepository.Delete(id);
-                    if (!deleteResult)
-                    {
-                        throw new EntityDeleteException("User not delete");
-                    }
-                }
-                else
                     throw new EntityDeleteException("User not delete");
+                }
 
-                 await transaction.CommitAsync();
+                await transaction.CommitAsync();
             }
             catch
             {
                 await transaction.RollbackAsync();
                 throw new EntityDeleteException($"Error deleting user {id}");
             }
-
-            await _connection.CloseAsync();
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
 
         public async Task<IEnumerable<UserDTO>> ReadAll()
@@ -72,7 +68,7 @@ namespace Application.Services
             return mappedUsers;
         }
 
-        public async Task<UserDTO?> ReadById(int id)
+        public async Task<UserDTO> ReadById(int id)
         {
             var user = await _userRepository.ReadById(id);
             var mappedUser = _mapper.Map<UserDTO>(user);

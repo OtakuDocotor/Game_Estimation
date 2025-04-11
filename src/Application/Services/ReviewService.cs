@@ -2,7 +2,6 @@
 using Application.Exceptions;
 using Application.Requests.ReviewRequests;
 using AutoMapper;
-using Azure.Core;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
 
@@ -52,7 +51,7 @@ namespace Application.Services
             return mappedReviews;
         }
 
-        public async Task<ReviewDTO?> ReadById(int id)
+        public async Task<ReviewDTO> ReadById(int id)
         {
             var review = await _reviewRepository.ReadById(id);
             if (review == null)

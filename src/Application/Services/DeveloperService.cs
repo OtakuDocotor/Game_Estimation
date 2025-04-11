@@ -43,25 +43,19 @@ namespace Application.Services
 
             try
             {
-                var developer = await ReadById(id);
-                if (developer != null)
-                {
-                    var gamesToDelete = (await _gameRepository.GamesByDeveloper(id)).ToList();
-                    if (gamesToDelete != null)
-                        gamesToDelete.ForEach(async x =>
-                        {
-                            await _reviewRepository.DeleteByGameId(x.ID);
-                            await _gameRepository.Delete(x.ID);
-                        });
-
-                    var deleteResult = await _developerRepository.Delete(id);
-                    if (!deleteResult)
+                var gamesToDelete = (await _gameRepository.GamesByDeveloper(id)).ToList();
+                if (gamesToDelete != null)
+                    gamesToDelete.ForEach(async x =>
                     {
-                        throw new InvalidOperationException("Developer not deleted");
-                    }
+                        await _reviewRepository.DeleteByGameId(x.ID);
+                        await _gameRepository.Delete(x.ID);
+                    });
+
+                var deleteResult = await _developerRepository.Delete(id);
+                if (!deleteResult)
+                {
+                    throw new InvalidOperationException("Developer not deleted");
                 }
-                else
-                    new InvalidOperationException("Developer not deleted");
 
                 await transaction.CommitAsync();
             }
@@ -70,8 +64,10 @@ namespace Application.Services
                 await transaction.RollbackAsync();
                 throw new EntityDeleteException($"Error deleting developer {id}");
             }
-
-            await _connection.CloseAsync();
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
 
         public async Task<IEnumerable<DeveloperDTO>> ReadAll()
@@ -81,7 +77,7 @@ namespace Application.Services
             return mappedDeveloper;
         }
 
-        public async Task<DeveloperDTO?> ReadById(int id)
+        public async Task<DeveloperDTO> ReadById(int id)
         {
             var developer = await _developerRepository.ReadById(id);
             if (developer == null)
