@@ -51,6 +51,11 @@ namespace Infrastructure.Repositories.InMemoryRepositories
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<int>> GamesIdByDeveloper(int developerId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Game>> ReadAll()
         {
             return Task.FromResult(_games.AsEnumerable());

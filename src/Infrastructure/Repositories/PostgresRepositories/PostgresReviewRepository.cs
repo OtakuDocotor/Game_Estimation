@@ -99,6 +99,17 @@ namespace Infrastructure.Repositories.PostgressRepositories
             return reviews;
         }
 
+        public async Task<bool> DeleteByGames(int[] ids)
+        {
+            var affectedRows = await _connection.ExecuteAsync(
+                @"DELETE FROM reviews
+                WHERE id = ANY(@Ids)",
+                new { Ids = ids }
+                );
+
+            return affectedRows > 0;
+        }
+
         public async Task<IEnumerable<Review>> GetAllByUser(int userId)
         {
             var reviews = await _connection.QueryAsync<Review>(

@@ -66,6 +66,19 @@ namespace Infrastructure.Repositories.PostgressRepositories
             return games;
         }
 
+        public async Task<IEnumerable<int>> GamesIdByDeveloper(int developerId)
+        {
+            var gamesIds = await _connection.QueryAsync<int>(
+                @"SELECT id
+                FROM games
+                WHERE developer_id = @DeveloperId ",
+                new
+                {
+                    DeveloperId = developerId
+                });
+            return gamesIds;
+        }
+
         public async Task<IEnumerable<Game>> ReadAll()
         {
             var games = await _connection.QueryAsync<Game>(

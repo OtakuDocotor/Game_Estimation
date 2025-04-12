@@ -10,6 +10,7 @@ namespace Infrastructure.Repositories.Interfaces
         public Task<bool> Update(Game game);
         public Task<bool> Delete(int id);
         public Task<IEnumerable<Game>> GamesByDeveloper(int developerId);
+        public Task<IEnumerable<int>> GamesIdByDeveloper(int developerId);
         public Task<bool> DeleteByDeveloper(int developerId);
     }
 }

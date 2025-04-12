@@ -39,6 +39,11 @@ namespace Infrastructure.Repositories.InMemoryRepositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteByGames(int[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> DeleteByUserId(int userId)
         {
             throw new NotImplementedException();

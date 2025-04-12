@@ -43,14 +43,12 @@ namespace Application.Services
 
             try
             {
-                var gamesToDelete = (await _gameRepository.GamesByDeveloper(id)).ToList();
+                var gamesToDelete = (await _gameRepository.GamesIdByDeveloper(id)).ToArray();
                 if (gamesToDelete != null)
-                    gamesToDelete.ForEach(async x =>
-                    {
-                        await _reviewRepository.DeleteByGameId(x.ID);
-                        await _gameRepository.Delete(x.ID);
-                    });
-
+                {
+                    await _reviewRepository.DeleteByGames(gamesToDelete);
+                    await _gameRepository.DeleteByDeveloper(id);
+                }
                 var deleteResult = await _developerRepository.Delete(id);
                 if (!deleteResult)
                 {
