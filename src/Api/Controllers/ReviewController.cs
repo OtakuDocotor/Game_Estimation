@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.Requests.ReviewRequests;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,26 +17,18 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ReviewDTO review)
+        public async Task<IActionResult> Create([FromBody] CreateReviewRequest review)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var reviewId = await _reviewService.Create(review);
             var result = new { Id = reviewId };
-            return CreatedAtAction(nameof(ReadById), new { id = reviewId }, result);
+            return CreatedAtAction(nameof(ReadById), result, result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _reviewService.Delete(id);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _reviewService.Delete(id);
+            return NoContent();
         }
 
         [HttpGet]
@@ -49,26 +42,14 @@ namespace Api.Controllers
         public async Task<IActionResult> ReadById(int id)
         {
             var result = await _reviewService.ReadById(id);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Ok(result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(ReviewDTO review)
+        public async Task<IActionResult> Update(UpdateReviewRequest review)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _reviewService.Update(review);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            await _reviewService.Update(review);
+            return NoContent();
         }
     }
 }

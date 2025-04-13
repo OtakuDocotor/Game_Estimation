@@ -68,7 +68,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE reviews SET 
-                name = @Name
+                name = @Name,
                 content = @Content,
                 score = @Score,
                 user_id = @UserId,
@@ -83,6 +83,67 @@ namespace Infrastructure.Repositories.PostgressRepositories
                 UserId = review.UserId,
                 GameId = review.GameId
             });
+            return affectedRows > 0;
+        }
+
+        public async Task<IEnumerable<Review>> GetAllByGame(int gameId)
+        {
+            var reviews = await _connection.QueryAsync<Review>(
+                @"SELECT id, name, content, score, user_id, game_id
+                FROM reviews
+                WHERE game_id = @GameId ",
+                new 
+                {
+                    GameId = gameId 
+                });
+            return reviews;
+        }
+
+        public async Task<bool> DeleteByGames(int[] ids)
+        {
+            var affectedRows = await _connection.ExecuteAsync(
+                @"DELETE FROM reviews
+                WHERE id = ANY(@Ids)",
+                new { Ids = ids }
+                );
+
+            return affectedRows > 0;
+        }
+
+        public async Task<IEnumerable<Review>> GetAllByUser(int userId)
+        {
+            var reviews = await _connection.QueryAsync<Review>(
+                @"SELECT id, name, content, score, user_id, game_id
+                FROM reviews
+                WHERE user_id = @UserId ",
+                new
+                {
+                    UserId = userId
+                });
+            return reviews;
+        }
+
+        public async Task<bool> DeleteByUserId(int userId)
+        {
+            var affectedRows = await _connection.ExecuteAsync(
+                @"DELETE FROM reviews
+                WHERE user_id = @UserId",
+                new
+                {
+                    UserId = userId
+                });
+            return affectedRows > 0;
+        }
+
+        public async Task<bool> DeleteByGameId(int gameId)
+        {
+            var affectedRows = await _connection.ExecuteAsync(
+                @"DELETE FROM reviews
+                WHERE game_id = @GameId",
+                new
+                {
+                    GameId = gameId
+                });
             return affectedRows > 0;
         }
     }

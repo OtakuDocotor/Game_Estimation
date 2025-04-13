@@ -9,5 +9,10 @@ namespace Infrastructure.Repositories.Interfaces
         public Task<int> Create(Review review);
         public Task<bool> Update(Review review);
         public Task<bool> Delete(int id);
+        public Task<IEnumerable<Review>> GetAllByGame(int gameId);
+        public Task<IEnumerable<Review>> GetAllByUser(int userId);
+        public Task<bool> DeleteByUserId(int userId);
+        public Task<bool> DeleteByGameId(int gameId);
+        public Task<bool> DeleteByGames(int [] ids);
     }
 }

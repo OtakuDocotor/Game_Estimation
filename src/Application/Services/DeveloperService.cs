@@ -1,7 +1,10 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
+using Application.Requests.DeveloperRequests;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Npgsql;
 
 namespace Application.Services
 {
@@ -11,39 +14,58 @@ namespace Application.Services
         private readonly IGameRepository _gameRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
+        private readonly NpgsqlConnection _connection;
 
-        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository)
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository,NpgsqlConnection connection)
         {
             _developerRepository = developerRepository;
             _mapper = mapper;
             _gameRepository = gameRepository;
             _reviewRepository = reviewRepository;
+            _connection = connection;
         }
 
-        public async Task<int> Create(DeveloperDTO dev)
+        public async Task<int> Create(CreateDeveloperRequest request)
         {
-            var mappedDeveloper = _mapper.Map<Developer>(dev);
-            if (mappedDeveloper != null)
+            var developer = new Developer
             {
-                var id = await _developerRepository.Create(mappedDeveloper);
-                return id;
-            }
-            return 0;
+                Name = request.Name,
+                Description = request.Description,
+                LogoURL = request.LogoURL
+            };
+            return await _developerRepository.Create(developer);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-            var developer = await ReadById(id);
-            if (developer != null)
+            await _connection.OpenAsync();
+            await using var transaction = await _connection.BeginTransactionAsync();
+
+            try
             {
-                developer.Games.ForEach(async x =>
+                var gamesToDelete = (await _gameRepository.GamesIdByDeveloper(id)).ToArray();
+                if (gamesToDelete != null)
                 {
-                    x.Reviews.ForEach(async y => await _reviewRepository.Delete(y.ID));
-                    await _gameRepository.Delete(x.ID);
-                });
-                return await _developerRepository.Delete(id);
+                    await _reviewRepository.DeleteByGames(gamesToDelete);
+                    await _gameRepository.DeleteByDeveloper(id);
+                }
+                var deleteResult = await _developerRepository.Delete(id);
+                if (!deleteResult)
+                {
+                    throw new InvalidOperationException("Developer not deleted");
+                }
+
+                await transaction.CommitAsync();
             }
-            return false;
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw new EntityDeleteException($"Error deleting developer {id}");
+            }
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
 
         public async Task<IEnumerable<DeveloperDTO>> ReadAll()
@@ -53,21 +75,29 @@ namespace Application.Services
             return mappedDeveloper;
         }
 
-        public async Task<DeveloperDTO?> ReadById(int id)
+        public async Task<DeveloperDTO> ReadById(int id)
         {
             var developer = await _developerRepository.ReadById(id);
+            if (developer == null)
+            {
+                throw new NotFoundApplicationException("Developer not found");
+            }
             var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
             return mappedDeveloper;
         }
 
-        public async Task<bool> Update(DeveloperDTO dev)
+        public async Task Update(UpdateDeveloperRequest request)
         {
-            var mappedDeveloper = _mapper.Map<Developer>(dev);
-            if (mappedDeveloper != null)
+            var developer = await _developerRepository.ReadById(request.ID);
+            developer.ChangeName(request.Name);
+            developer.ChangeDescription(request.Description);
+            developer.ChangeLogo(request.LogoURL);
+
+            var updateResult = await _developerRepository.Update(developer);
+            if (!updateResult)
             {
-                return await _developerRepository.Update(mappedDeveloper);
+                throw new EntityUpdateException("Developer not updated.");
             }
-            return false;
         }
     }
 }

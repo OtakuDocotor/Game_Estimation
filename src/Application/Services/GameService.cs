@@ -1,7 +1,10 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
+using Application.Requests.GameRequests;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Npgsql;
 
 namespace Application.Services
 {
@@ -11,40 +14,55 @@ namespace Application.Services
         private readonly IGameRepository _gameRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
+        private readonly NpgsqlConnection _connection;
 
-        public GameService(IGameRepository gameRepository, IMapper mapper, IDeveloperRepository developerRepository, IReviewRepository reviewRepository)
+        public GameService(IGameRepository gameRepository, IMapper mapper, IDeveloperRepository developerRepository, IReviewRepository reviewRepository, NpgsqlConnection connection)
         {
             _reviewRepository = reviewRepository;
             _developerRepository = developerRepository;
             _gameRepository = gameRepository;
             _mapper = mapper;
+            _connection = connection;
         }
 
-        public async Task<int> Create(GameDTO game)
+        public async Task<int> Create(CreateGameRequest request)
         {
-            var mappedGame = _mapper.Map<Game>(game);
-            if (mappedGame != null && await _developerRepository.ReadById(game.DeveloperId) != null)
-            {
-                var id = await _gameRepository.Create(mappedGame);
-                return id;
-            }
-            return 0;
+            var game = new Game()
+            { 
+                Name = request.Name,
+                AverageScore = request.AverageScore,
+                DeveloperId = request.DeveloperId
+            };
+
+            return await _gameRepository.Create(game);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-            var game = await ReadById(id);
-            if (game != null)
+            await _connection.OpenAsync();
+            await using var transaction = await _connection.BeginTransactionAsync();
+
+            try
             {
-                var reviews = (await _reviewRepository.ReadAll()).ToList();
-                var reviewsToDelete = reviews.FindAll(x => x.GameId == id);
-                if (reviewsToDelete != null)
+                await _reviewRepository.DeleteByGameId(id);
+
+                var deleteResult = await _gameRepository.Delete(id);
+                if (!deleteResult)
                 {
-                    reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
+                    throw new InvalidOperationException("Game not deleted");
                 }
-                return await _gameRepository.Delete(id);
+
+                await transaction.CommitAsync();
             }
-            return false;
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw new EntityDeleteException($"Error deleting game {id}");
+            }
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
 
         public async Task<IEnumerable<GameDTO>> ReadAll()
@@ -54,21 +72,29 @@ namespace Application.Services
             return mappedGames;
         }
 
-        public async Task<GameDTO?> ReadById(int id)
+        public async Task<GameDTO> ReadById(int id)
         {
             var game = await _gameRepository.ReadById(id);
+            if (game == null)
+            {
+                throw new NotFoundApplicationException("Game not found");
+            }
             var mappedGame = _mapper.Map<GameDTO>(game);
             return mappedGame;
         }
 
-        public async Task<bool> Update(GameDTO game)
+        public async Task Update(UpdateGameRequest request)
         {
-            var mappedGames = _mapper.Map<Game>(game);
-            if (mappedGames != null)
+            var game = await _gameRepository.ReadById(request.ID);
+            game.ChangeName(request.Name);
+            game.ChangeDeveloper(request.DeveloperId);
+            game.ChangeAvgScore(request.AverageScore);
+
+            var updateResult = await _gameRepository.Update(game);
+            if (!updateResult)
             {
-                return await _gameRepository.Update(mappedGames);
+                throw new EntityUpdateException("Game not delete");
             }
-            return false;
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
+using Application.Requests.UserRequest;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Npgsql;
 
 namespace Application.Services
 {
@@ -10,38 +13,52 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
+        private readonly NpgsqlConnection _connection;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository, NpgsqlConnection connection)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _reviewRepository = reviewRepository;
+            _connection = connection;
         }
 
-        public async Task<int> Create(UserDTO user)
+        public async Task<int> Create(CreateUserRequest request)
         {
-            var mappedUser = _mapper.Map<User>(user);
-            if (mappedUser != null)
-            {
-                var id = await _userRepository.Create(mappedUser);
-                return id;
-            }
-            return 0;
+            var user = new User
+            { 
+                Name = request.Name
+            };
+
+            return await _userRepository.Create(user);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-            var user = await ReadById(id);
-            if (user != null)
+            await _connection.OpenAsync();
+            using var transaction = await _connection.BeginTransactionAsync();
+
+            try
             {
-                var reviews = (await _reviewRepository.ReadAll()).ToList();
-                var reviewsToDelete = reviews.FindAll(x => x.UserId == id);
-                if (reviewsToDelete != null)
+                await _reviewRepository.DeleteByUserId(id);
+
+                var deleteResult = await _userRepository.Delete(id);
+                if (!deleteResult)
                 {
-                    reviewsToDelete.ForEach(async x => await _reviewRepository.Delete(x.ID));
+                    throw new EntityDeleteException("User not delete");
                 }
+
+                await transaction.CommitAsync();
             }
-            return await _userRepository.Delete(id);
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw new EntityDeleteException($"Error deleting user {id}");
+            }
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
 
         public async Task<IEnumerable<UserDTO>> ReadAll()
@@ -51,21 +68,23 @@ namespace Application.Services
             return mappedUsers;
         }
 
-        public async Task<UserDTO?> ReadById(int id)
+        public async Task<UserDTO> ReadById(int id)
         {
             var user = await _userRepository.ReadById(id);
             var mappedUser = _mapper.Map<UserDTO>(user);
             return mappedUser;
         }
 
-        public async Task<bool> Update(UserDTO user)
+        public async Task Update(UpdateUserRequest request)
         {
-            var mappedUser = _mapper.Map<User>(user);
-            if (mappedUser != null)
+            var user = await _userRepository.ReadById(request.ID);
+            user.ChangeName(request.Name);
+
+            var updateResult = await _userRepository.Update(user);
+            if (!updateResult)
             {
-                return await _userRepository.Update(mappedUser);
+                throw new EntityUpdateException("User not updated");
             }
-            return false;
         }
     }
 }

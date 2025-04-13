@@ -1,4 +1,6 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
+using Application.Requests.ReviewRequests;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
@@ -20,22 +22,26 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<int> Create(ReviewDTO review)
+        public async Task<int> Create(CreateReviewRequest request)
         {
-            var mappedReview = _mapper.Map<Review>(review);
-            var gameExists = await _gameRepository.ReadById(review.GameId) != null;
-            var userExists = await _userRepository.ReadById(review.UserId) != null;
-            if (mappedReview != null && gameExists && userExists)
+            var review = new Review()
             {
-               var id = await _reviewRepository.Create(mappedReview);
-                return id;
-            }
-            return 0;
+                Name = request.Name,
+                Content = request.Content,
+                GameId = request.GameId,
+                UserId = request.UserId 
+            };
+
+            return await _reviewRepository.Create(review);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-            return await _reviewRepository.Delete(id);
+            var deleteResult = await _reviewRepository.Delete(id);
+            if (!deleteResult)
+            {
+                throw new EntityDeleteException("Review not deleted");
+            }
         }
 
         public async Task<IEnumerable<ReviewDTO>> ReadAll()
@@ -45,21 +51,31 @@ namespace Application.Services
             return mappedReviews;
         }
 
-        public async Task<ReviewDTO?> ReadById(int id)
+        public async Task<ReviewDTO> ReadById(int id)
         {
             var review = await _reviewRepository.ReadById(id);
+            if (review == null)
+            {
+                throw new NotFoundApplicationException("Review not found");
+            }
             var mappedReview =_mapper.Map<ReviewDTO>(review);
             return mappedReview;
         }
 
-        public async Task<bool> Update(ReviewDTO review)
+        public async Task Update(UpdateReviewRequest request)
         {
-            var mappedReview = _mapper.Map<Review>(review);
-            if (mappedReview != null)
+            var review = await _reviewRepository.ReadById(request.ID);
+            review.ChangeName(request.Name);
+            review.ChangeContent(request.Content);
+            review.ChangeUser(request.UserId);
+            review.ChangeGame(request.GameId);
+            review.ChangeScore(request.Score);
+
+            var updateResult = await _reviewRepository.Update(review);
+            if (!updateResult)
             {
-                return await _reviewRepository.Update(mappedReview);
+                throw new EntityUpdateException("Review not update");
             }
-            return false;
         }
     }
 }

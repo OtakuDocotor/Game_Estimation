@@ -41,6 +41,44 @@ namespace Infrastructure.Repositories.PostgressRepositories
             return affectedRows > 0;
         }
 
+        public async Task<bool> DeleteByDeveloper(int developerId)
+        {
+            var affectedRows = await _connection.ExecuteAsync(
+                @"DELETE FROM games
+                WHERE developer_id = @DeveloperId",
+                new
+                {
+                    DeveloperId = developerId
+                });
+            return affectedRows > 0;
+        }
+
+        public async Task<IEnumerable<Game>> GamesByDeveloper(int developerId)
+        {
+            var games = await _connection.QueryAsync<Game>(
+                @"SELECT id, name, average_score, developer_id
+                FROM games
+                WHERE developer_id = @DeveloperId ",
+                new 
+                {
+                    DeveloperId=developerId
+                });
+            return games;
+        }
+
+        public async Task<IEnumerable<int>> GamesIdByDeveloper(int developerId)
+        {
+            var gamesIds = await _connection.QueryAsync<int>(
+                @"SELECT id
+                FROM games
+                WHERE developer_id = @DeveloperId ",
+                new
+                {
+                    DeveloperId = developerId
+                });
+            return gamesIds;
+        }
+
         public async Task<IEnumerable<Game>> ReadAll()
         {
             var games = await _connection.QueryAsync<Game>(
@@ -66,8 +104,8 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE games SET 
-                name = @Name
-                average_score = @AverageScore
+                name = @Name,
+                average_score = @AverageScore,
                 developer_Id = @DeveloperId
                 WHERE id = @Id",
             new
