@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Application;
 using Application.Services;
-using Application.DTO;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Application.Requests.DeveloperRequests;
 
 namespace Api.Controllers

@@ -4,6 +4,8 @@ using Application.Requests.UserRequest;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace Application.Services
@@ -14,23 +16,27 @@ namespace Application.Services
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
         private readonly NpgsqlConnection _connection;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository, NpgsqlConnection connection)
+        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository, NpgsqlConnection connection, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _reviewRepository = reviewRepository;
             _connection = connection;
+            _logger = logger;
         }
 
         public async Task<int> Create(CreateUserRequest request)
         {
             var user = new User
-            { 
+            {
                 Name = request.Name
             };
 
-            return await _userRepository.Create(user);
+            var createResult = await _userRepository.Create(user);
+            _logger.LogInformation("User created with id:{ID}", createResult);
+            return createResult;
         }
 
         public async Task Delete(int id)
@@ -43,6 +49,7 @@ namespace Application.Services
                 await _reviewRepository.DeleteByUserId(id);
 
                 var deleteResult = await _userRepository.Delete(id);
+                _logger.LogInformation("User with id:{id}, deleted", id);
                 if (!deleteResult)
                 {
                     throw new EntityDeleteException("User not delete");
@@ -85,6 +92,7 @@ namespace Application.Services
             {
                 throw new EntityUpdateException("User not updated");
             }
+            _logger.LogInformation("User with id:{id}, updated", request.ID);
         }
     }
 }

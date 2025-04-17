@@ -1,5 +1,4 @@
-﻿using Application.DTO;
-using Application.Requests.UserRequest;
+﻿using Application.Requests.UserRequest;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
