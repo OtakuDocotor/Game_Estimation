@@ -4,6 +4,7 @@ using Application.Requests.DeveloperRequests;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace Application.Services
@@ -15,14 +16,16 @@ namespace Application.Services
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
         private readonly NpgsqlConnection _connection;
+        private readonly ILogger<DeveloperService> _logger;
 
-        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository,NpgsqlConnection connection)
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository, NpgsqlConnection connection, ILogger<DeveloperService> logger)
         {
             _developerRepository = developerRepository;
             _mapper = mapper;
             _gameRepository = gameRepository;
             _reviewRepository = reviewRepository;
             _connection = connection;
+            _logger = logger;
         }
 
         public async Task<int> Create(CreateDeveloperRequest request)
@@ -33,7 +36,10 @@ namespace Application.Services
                 Description = request.Description,
                 LogoURL = request.LogoURL
             };
-            return await _developerRepository.Create(developer);
+
+            var createResult = await _developerRepository.Create(developer);
+            _logger.LogInformation("Developer created with id:{ID}", createResult);
+            return createResult;
         }
 
         public async Task Delete(int id)
@@ -50,6 +56,7 @@ namespace Application.Services
                     await _gameRepository.DeleteByDeveloper(id);
                 }
                 var deleteResult = await _developerRepository.Delete(id);
+                _logger.LogInformation("Developer with id:{id}, deleted", id);
                 if (!deleteResult)
                 {
                     throw new InvalidOperationException("Developer not deleted");
@@ -98,6 +105,7 @@ namespace Application.Services
             {
                 throw new EntityUpdateException("Developer not updated.");
             }
+            _logger.LogInformation("Developer with id:{id}, updated", request.ID);
         }
     }
 }

@@ -4,6 +4,7 @@ using Application.Requests.ReviewRequests;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
@@ -13,13 +14,15 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<ReviewService> _logger;
 
-        public ReviewService(IReviewRepository reviewRepository, IMapper mapper, IUserRepository userRepository, IGameRepository gameRepository)
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper, IUserRepository userRepository, IGameRepository gameRepository, ILogger<ReviewService> logger)
         {
             _reviewRepository = reviewRepository;
             _gameRepository = gameRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<int> Create(CreateReviewRequest request)
@@ -32,12 +35,15 @@ namespace Application.Services
                 UserId = request.UserId 
             };
 
-            return await _reviewRepository.Create(review);
+            var createResult = await _reviewRepository.Create(review);
+            _logger.LogInformation("Review created with id:{ID}", createResult);
+            return createResult;
         }
 
         public async Task Delete(int id)
         {
             var deleteResult = await _reviewRepository.Delete(id);
+            _logger.LogInformation("Review with id:{id}, deleted", id);
             if (!deleteResult)
             {
                 throw new EntityDeleteException("Review not deleted");
@@ -76,6 +82,7 @@ namespace Application.Services
             {
                 throw new EntityUpdateException("Review not update");
             }
+            _logger.LogInformation("Review with id:{id}, updated", request.ID);
         }
     }
 }

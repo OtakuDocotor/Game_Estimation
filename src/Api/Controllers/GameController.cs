@@ -1,5 +1,4 @@
-﻿using Application.DTO;
-using Application.Requests.GameRequests;
+﻿using Application.Requests.GameRequests;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 

@@ -4,6 +4,7 @@ using Application.Requests.GameRequests;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace Application.Services
@@ -15,14 +16,16 @@ namespace Application.Services
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
         private readonly NpgsqlConnection _connection;
+        private readonly ILogger<GameService> _logger;
 
-        public GameService(IGameRepository gameRepository, IMapper mapper, IDeveloperRepository developerRepository, IReviewRepository reviewRepository, NpgsqlConnection connection)
+        public GameService(IGameRepository gameRepository, IMapper mapper, IDeveloperRepository developerRepository, IReviewRepository reviewRepository, NpgsqlConnection connection, ILogger<GameService> logger)
         {
             _reviewRepository = reviewRepository;
             _developerRepository = developerRepository;
             _gameRepository = gameRepository;
             _mapper = mapper;
             _connection = connection;
+            _logger = logger;
         }
 
         public async Task<int> Create(CreateGameRequest request)
@@ -34,7 +37,9 @@ namespace Application.Services
                 DeveloperId = request.DeveloperId
             };
 
-            return await _gameRepository.Create(game);
+            var createResult = await _gameRepository.Create(game);
+            _logger.LogInformation("Game created with id:{ID}", createResult);
+            return createResult;
         }
 
         public async Task Delete(int id)
@@ -47,6 +52,7 @@ namespace Application.Services
                 await _reviewRepository.DeleteByGameId(id);
 
                 var deleteResult = await _gameRepository.Delete(id);
+                _logger.LogInformation("Game with id:{id}, deleted", id);
                 if (!deleteResult)
                 {
                     throw new InvalidOperationException("Game not deleted");
@@ -95,6 +101,7 @@ namespace Application.Services
             {
                 throw new EntityUpdateException("Game not delete");
             }
+            _logger.LogInformation("Game with id:{id}, updated", request.ID);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Domain.Entities
         public List<Game>? Games { get; set; }
         public string? LogoURL { get; set; }
 
-        public void ChangeName(string name)
+        public void ChangeName(string? name)
         {
             Name = name;
         }
