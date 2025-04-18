@@ -42,7 +42,6 @@ namespace ApplicationUnitTests.Services
 
             var loggerMock = new Mock<ILogger<UserService>>();
 
-            _userService = new UserService(_userRepository,_mapper,_reviewRepository,)
         }
 
         [Fact]
