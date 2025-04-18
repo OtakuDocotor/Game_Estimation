@@ -21,7 +21,7 @@ namespace Api.Middleware
                 sw.Stop();
                 var elapsed = sw.Elapsed;
 
-                if(elapsed > _threshold)
+                if (elapsed > _threshold)
                     logger.LogWarning(
                         "Long running request: {Method} {Path} took {ElapsedMilliseconds}ms with status {StatusCode}",
                             context.Request.Method,
