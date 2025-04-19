@@ -11,16 +11,12 @@ namespace Application.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IGameRepository _gameRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ReviewService> _logger;
 
-        public ReviewService(IReviewRepository reviewRepository, IMapper mapper, IUserRepository userRepository, IGameRepository gameRepository, ILogger<ReviewService> logger)
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper, ILogger<ReviewService> logger)
         {
             _reviewRepository = reviewRepository;
-            _gameRepository = gameRepository;
-            _userRepository = userRepository;
             _mapper = mapper;
             _logger = logger;
         }
