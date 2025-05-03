@@ -8,6 +8,9 @@ namespace Api.ExceptionHandlers
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
+            if (exception is not UnauthorizedAccessException)
+                return false; 
+
             httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             httpContext.Response.ContentType = "application/problem+json";
 

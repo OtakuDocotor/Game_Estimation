@@ -64,6 +64,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<UnauthorizedExceptionHandler>();
 builder.Services.AddExceptionHandler<DbExceptionHandler>();
 builder.Services.AddExceptionHandler<ApplicationExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -99,7 +100,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
-    options.AddFixedWindowLimiter("login", limiterOptions =>
+    options.AddFixedWindowLimiter("auth", limiterOptions =>
     {
         limiterOptions.Window = TimeSpan.FromMinutes(1); // 1-minute window
         limiterOptions.PermitLimit = 5; // Max 5 login attempts per minute

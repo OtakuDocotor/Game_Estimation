@@ -22,5 +22,4 @@ namespace Application.Requests.UserRequest
             RuleFor(x => x.Password).NotEmpty().MinimumLength(ValidationConstants.MinLengthPassword);
         }
     }
-
 }

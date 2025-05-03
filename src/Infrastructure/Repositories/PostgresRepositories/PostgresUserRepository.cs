@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         public async Task<IEnumerable<User>> ReadAll()
         {
             var users = await _connection.QueryAsync<User>(
-                @"SELECT id, name, email, password_hash, role
+                @"SELECT id, name, email, password_hash, role::text
                 FROM users");
             return users;
         }
@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         public async Task<User?> ReadByEmail(string email)
         {
             var user = await _connection.QueryFirstOrDefaultAsync<User>(
-                @"SELECT id, name, email, password_hash, role
+                @"SELECT id, name, email, password_hash, role::text
                 FROM users
                 WHERE email = @Email",
                 new
@@ -60,7 +60,7 @@ namespace Infrastructure.Repositories.PostgressRepositories
         public async Task<User?> ReadById(int id)
         {
             var user = await _connection.QueryFirstOrDefaultAsync<User>(
-                @"SELECT id, name, email, password_hash, role
+                @"SELECT id, name, email, password_hash, role::text
                 FROM users
                 WHERE id = @Id",
                 new
