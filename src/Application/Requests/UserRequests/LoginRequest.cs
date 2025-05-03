@@ -13,7 +13,7 @@ namespace Application.Requests.UserRequests
         public LoginRequestValidator()
         {
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            RuleFor(x => x.Password).NotEmpty().MinimumLength(8);
+            RuleFor(x => x.Password).NotEmpty().MinimumLength(ValidationConstants.MinLengthPassword);
         }
     }
 }

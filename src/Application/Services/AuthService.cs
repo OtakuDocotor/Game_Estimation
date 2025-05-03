@@ -6,24 +6,19 @@ using Domain.Enums;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
     public class AuthService(IConfiguration configuration,
-         IMapper mapper,
-         IUserRepository userRepository,
-         IPasswordHasher hasher
+            IMapper mapper,
+            IUserRepository userRepository,
+            IPasswordHasher hasher
          )
          : IAuthService
     {
-
         public async Task<int> Register(RegistrationRequest request)
         {
             var user = mapper.Map<User>(request);
@@ -34,6 +29,7 @@ namespace Application.Services
 
             return userId;
         }
+
         public async Task<LoginResponse> Login(LoginRequest request)
         {
             var user = await userRepository.ReadByEmail(request.Email);
@@ -63,7 +59,6 @@ namespace Application.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                 new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-                new Claim(ClaimTypes.GivenName, user.Name ?? string.Empty),
                 new Claim(ClaimTypes.Role, user.Role.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
             }),
@@ -76,6 +71,5 @@ namespace Application.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
     }
 }

@@ -6,6 +6,7 @@ using Application.Requests;
 using Bogus;
 using Application.Exceptions;
 using Application.Requests.UserRequest;
+using Domain.Enums;
 
 
 namespace ApplicationUnitTests.Services
@@ -62,7 +63,11 @@ namespace ApplicationUnitTests.Services
             var request = new UpdateUserRequest
             {
                 ID = user.ID,
-                Name = "Updated User Name"
+                Name = "Updated User Name",
+                Email = " eve@eve",
+                Password = "625x68235x578346x5786734",
+                Role = UserRoles.Admin
+                
             };
 
             await _userService.Update(request);

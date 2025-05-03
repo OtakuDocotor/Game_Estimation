@@ -2,6 +2,7 @@ using System.Reflection;
 using Application;
 using Bogus;
 using Domain.Entities;
+using Domain.Enums;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Processors;
 using Infrastructure;
@@ -100,7 +101,10 @@ public sealed class TestingFixture : IAsyncLifetime
 
         var userId = await userRepository.Create(new User
         {
-            Name = _faker.Name.FirstName()
+            Name = _faker.Name.FirstName(),
+            Email = _faker.Internet.Email(),
+            PasswordHash = "625x68235x578346x5786734aasdas",
+            Role = UserRoles.User
         });
 
         var user = await userRepository.ReadById(userId);

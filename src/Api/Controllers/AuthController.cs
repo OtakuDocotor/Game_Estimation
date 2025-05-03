@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
-
 namespace Api.Controllers
 {
     [AllowAnonymous]
@@ -14,7 +13,7 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        [EnableRateLimiting("login")]
+        [EnableRateLimiting("register")]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest user)
         {
