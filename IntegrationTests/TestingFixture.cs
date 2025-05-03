@@ -6,7 +6,6 @@ using Domain.Enums;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Processors;
 using Infrastructure;
-using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
