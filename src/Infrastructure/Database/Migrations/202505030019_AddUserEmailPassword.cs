@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Database.Migrations
 {
-    [Migration(20250503019)]
+    [Migration(202505030019)]
     public class AddUserEmailPassword : Migration
     {
         public override void Up()
