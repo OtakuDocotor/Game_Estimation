@@ -1,10 +1,12 @@
 ﻿using Application.Requests.UserRequest;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
@@ -16,6 +18,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Create([FromBody] CreateUserRequest user)
         {
             var userId = await _userService.Create(user);
@@ -24,6 +27,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             await _userService.Delete(id);

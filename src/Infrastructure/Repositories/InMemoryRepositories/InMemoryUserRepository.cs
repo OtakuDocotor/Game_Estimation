@@ -45,6 +45,11 @@ namespace Infrastructure.Repositories.InMemoryRepositories
             return Task.FromResult(_users.AsEnumerable());
         }
 
+        public Task<User?> ReadByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<User?> ReadById(int id)
         {
             var rev = _users.Find(x => x.ID == id);

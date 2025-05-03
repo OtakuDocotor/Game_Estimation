@@ -26,7 +26,9 @@ namespace ApplicationUnitTests.Services
         {
             var request = new CreateUserRequest
             {
-                Name = "Ivan"
+                Name = "Ivan",
+                Email = "test@test123.ru",
+                Password = "eve@123"
             };
 
             var userId = await _userService.Create(request);

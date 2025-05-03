@@ -1,11 +1,13 @@
 ﻿using Application.Requests.GameRequests;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class GameController : ControllerBase
     {
         private readonly IGameService _gameService;

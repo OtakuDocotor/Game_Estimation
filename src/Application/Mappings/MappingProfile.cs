@@ -1,4 +1,6 @@
 ﻿using Application.DTO;
+using Application.Requests.UserRequest;
+using Application.Requests.UserRequests;
 using AutoMapper;
 using Domain.Entities;
 
@@ -12,6 +14,8 @@ namespace Application.Mappings
             CreateMap<Game, GameDTO>().ReverseMap();
             CreateMap<Review, ReviewDTO>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<RegistrationRequest, User>();
+            CreateMap<UpdateUserRequest, User>();
         }
     }
 }

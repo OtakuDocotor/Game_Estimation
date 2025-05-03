@@ -17,12 +17,15 @@ namespace Infrastructure.Repositories.PostgressRepositories
         public async Task<int> Create(User user)
         {
             var userId = await _connection.QuerySingleAsync<int>(
-                @"INSERT INTO users (name)
-                VALUES (@Name)
+                @"INSERT INTO users (name, email, password_hash, role)
+                VALUES (@Name, @Email, @PasswordHash, @Role::user_role)
                 RETURNING id",
                 new
                 {
                     Name = user.Name,
+                    Email = user.Email,
+                    PasswordHash = user.PasswordHash,
+                    Role = user.Role.ToString() 
                 });
             return userId;
         }
@@ -42,15 +45,28 @@ namespace Infrastructure.Repositories.PostgressRepositories
         public async Task<IEnumerable<User>> ReadAll()
         {
             var users = await _connection.QueryAsync<User>(
-                @"SELECT id, name
+                @"SELECT id, name, email, password_hash, role
                 FROM users");
             return users;
+        }
+
+        public async Task<User?> ReadByEmail(string email)
+        {
+            var user = await _connection.QueryFirstOrDefaultAsync<User>(
+                @"SELECT id, name, email, password_hash, role
+                FROM users
+                WHERE email = @Email",
+                new
+                {
+                    Email = email
+                });
+            return user;
         }
 
         public async Task<User?> ReadById(int id)
         {
             var user = await _connection.QueryFirstOrDefaultAsync<User>(
-                @"SELECT id, name
+                @"SELECT id, name, email, password_hash, role
                 FROM users
                 WHERE id = @Id",
                 new
@@ -64,12 +80,18 @@ namespace Infrastructure.Repositories.PostgressRepositories
         {
             var affectedRows = await _connection.ExecuteAsync(
                 @"UPDATE users SET 
-                name = @Name
+                name = @Name,
+                email = @Email, 
+                password_hash = @PasswordHash, 
+                role = @Role
                 WHERE id = @Id",
             new
             {
                 Id = user.ID,
-                Name = user.Name
+                Name = user.Name,
+                Email = user.Email,
+                PasswordHash = user.PasswordHash,
+                Role = user.Role
             });
             return affectedRows > 0;
         }
