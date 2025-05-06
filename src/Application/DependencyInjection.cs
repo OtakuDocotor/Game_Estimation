@@ -16,6 +16,8 @@ namespace Application
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IPasswordHasher, PasswordHasher>();
 
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();

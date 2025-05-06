@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services;
 using Application.Requests.DeveloperRequests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class DeveloperController : ControllerBase
     {
         private readonly IDeveloperService _developerService;
