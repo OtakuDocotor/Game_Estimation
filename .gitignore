@@ -17,3 +17,5 @@
 *.suo
 *.log
 *.cache
+
+/src/Api/Storage/images

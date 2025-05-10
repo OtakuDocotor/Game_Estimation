@@ -17,14 +17,16 @@ namespace Application.Services
         private readonly IMapper _mapper;
         private readonly NpgsqlConnection _connection;
         private readonly ILogger<UserService> _logger;
+        private readonly IAttachmentService _attachmentService;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository, NpgsqlConnection connection, ILogger<UserService> logger)
+        public UserService(IUserRepository userRepository, IMapper mapper, IReviewRepository reviewRepository, NpgsqlConnection connection, ILogger<UserService> logger, IAttachmentService attachmentService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _reviewRepository = reviewRepository;
             _connection = connection;
             _logger = logger;
+            _attachmentService = attachmentService;
         }
 
         public async Task<int> Create(CreateUserRequest request)
@@ -79,6 +81,12 @@ namespace Application.Services
         {
             var user = await _userRepository.ReadById(id);
             var mappedUser = _mapper.Map<UserDTO>(user);
+            if (mappedUser.LogoAttachmentId.HasValue)
+            {
+                var attachmentUrl = await _attachmentService
+                    .GetPublicLinkAsync(mappedUser.LogoAttachmentId.Value);
+                mappedUser.LogoAttachmentUrl = attachmentUrl;
+            }
             return mappedUser;
         }
 

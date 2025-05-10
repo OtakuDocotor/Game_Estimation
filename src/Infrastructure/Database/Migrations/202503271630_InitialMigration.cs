@@ -30,38 +30,6 @@ namespace Infrastructure.Database.Migrations
                 .WithColumn("score").AsDouble().NotNullable()
                 .WithColumn("user_id").AsInt32().ForeignKey("users", "id")
                 .WithColumn("game_id").AsInt32().ForeignKey("games", "id");
-
-            Insert.IntoTable("developers")
-                .Row(new
-                {
-                    name = "Arcane",
-                    description = "Good dev",
-                    logo_url = "Logo"
-                });
-
-            Insert.IntoTable("users")
-                .Row(new
-                {
-                    name = "Ilya"
-                });
-
-            Insert.IntoTable("games")
-                .Row(new
-                {
-                    name = "Prey",
-                    average_score = 8,
-                    developer_id = 1
-                });
-
-            Insert.IntoTable("reviews")
-                .Row(new
-                {
-                    name = "First review",
-                    content = "Good game",
-                    score = 8,
-                    user_id = 1,
-                    game_id = 1
-                });
         }
 
         public override void Down()

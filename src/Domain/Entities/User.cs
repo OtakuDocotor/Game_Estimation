@@ -11,6 +11,7 @@ namespace Domain.Entities
         public string? PasswordHash { get; set; }
         public UserRoles Role { get; set; }
         public List<Review>? Reviews { get; set; }
+        public int? LogoAttachmentId { get; set; }
 
         public void ChangeName(string name)
         {
