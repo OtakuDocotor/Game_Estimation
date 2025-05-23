@@ -17,8 +17,9 @@ namespace Application.Services
         private readonly IMapper _mapper;
         private readonly NpgsqlConnection _connection;
         private readonly ILogger<DeveloperService> _logger;
+        private readonly IAttachmentService _attachmentService;
 
-        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository, NpgsqlConnection connection, ILogger<DeveloperService> logger)
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, IGameRepository gameRepository, IReviewRepository reviewRepository, NpgsqlConnection connection, ILogger<DeveloperService> logger, IAttachmentService attachmentService)
         {
             _developerRepository = developerRepository;
             _mapper = mapper;
@@ -26,6 +27,7 @@ namespace Application.Services
             _reviewRepository = reviewRepository;
             _connection = connection;
             _logger = logger;
+            _attachmentService = attachmentService;
         }
 
         public async Task<int> Create(CreateDeveloperRequest request)
@@ -90,6 +92,12 @@ namespace Application.Services
                 throw new NotFoundApplicationException("Developer not found");
             }
             var mappedDeveloper = _mapper.Map<DeveloperDTO>(developer);
+            if (mappedDeveloper.LogoAttachmentId.HasValue)
+            {
+                var attachmentUrl = await _attachmentService
+                    .GetPublicLinkAsync(mappedDeveloper.LogoAttachmentId.Value);
+                mappedDeveloper.LogoAttachmentUrl = attachmentUrl;
+            }
             return mappedDeveloper;
         }
 

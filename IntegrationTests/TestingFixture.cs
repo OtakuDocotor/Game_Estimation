@@ -7,9 +7,11 @@ using FluentMigrator.Runner;
 using FluentMigrator.Runner.Processors;
 using Infrastructure;
 using Infrastructure.Repositories.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Moq;
 using Npgsql;
 using Respawn;
 using MigrationRunner = Infrastructure.Database.MigrationRunner.MigrationRunner;
@@ -29,6 +31,9 @@ public sealed class TestingFixture : IAsyncLifetime
             .ConfigureAppConfiguration((context, config) => { config.AddJsonFile("appsettings.json"); })
             .ConfigureServices((context, services) =>
             {
+                var environmentMock = new Mock<IWebHostEnvironment>();
+                environmentMock.Setup(m => m.ContentRootPath).Returns(Directory.GetCurrentDirectory());
+                services.AddSingleton(environmentMock.Object);
                 services.AddInfrastructure();
                 services.AddApplication();
 

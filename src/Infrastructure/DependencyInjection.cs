@@ -1,5 +1,7 @@
 ﻿using FluentMigrator.Runner;
 using Infrastructure.Repositories.Interfaces;
+using Infrastructure.Repositories.InterfacesRepositories;
+using Infrastructure.Repositories.PostgresRepositories;
 using Infrastructure.Repositories.PostgressRepositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,7 @@ namespace Infrastructure
             services.AddTransient<IUserRepository, PostgresUserRepository>();
             services.AddTransient<IGameRepository, PostgresGameRepository>();
             services.AddTransient<IReviewRepository, PostgresReviewRepository>();
+            services.AddTransient<IAttachmentRepository, PostgresAttachmentRepository>();
 
             DapperConfig.Configure();
             services.AddFluentMigratorCore()

@@ -18,6 +18,8 @@ namespace Application
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IPasswordHasher, PasswordHasher>();
+            services.AddTransient<IAttachmentService, AttachmentService>();
+            services.AddTransient<IFileStorageService, FileStorageService>();
 
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();

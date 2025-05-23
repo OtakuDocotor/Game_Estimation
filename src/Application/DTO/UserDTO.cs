@@ -10,6 +10,8 @@ namespace Application.DTO
         public string? Email { get; set; }
         public string? PasswordHash { get; set; }
         public UserRoles Role { get; set; }
+        public int? LogoAttachmentId { get; set; }
+        public string? LogoAttachmentUrl { get; set; }
         public List<ReviewDTO>? Reviews { get; set; }
     }
 }
