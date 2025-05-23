@@ -15,7 +15,8 @@ namespace Infrastructure.Repositories.PostgresRepositories
 
         public async Task<Attachment?> Get(int id)
         {
-            var sql = "SELECT * FROM attachments WHERE id = @id";
+            var sql = @"SELECT id, file_name, stored_path, content_type, size, created_at 
+                        FROM attachments WHERE id = @id";
             return await connection.QueryFirstOrDefaultAsync<Attachment>(sql, new { id });
         }
 
